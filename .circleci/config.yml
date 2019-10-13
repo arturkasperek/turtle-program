@@ -1,0 +1,31 @@
+version: 2
+
+references:
+  setupProject: &setupProject
+    - checkout
+    - restore_cache:
+        keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-
+
+    - run: yarn install
+    - save_cache:
+        paths:
+          - node_modules
+        key: v1-dependencies-{{ checksum "package.json" }}
+    - run: yarn prettier-check
+    - run: yarn
+
+jobs:
+  test_formatting:
+    docker:
+      - image: circleci/node:11.11
+    working_directory: ~/repo
+    steps:
+      - *setupProject
+      - run: yarn prettier-check
+workflows:
+  version: 2
+  format_check_and_test_and_build_test:
+    jobs:
+      - test_formatting
