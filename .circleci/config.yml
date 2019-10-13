@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  format_check:
     docker:
       - image: circleci/node:11.11
     working_directory: ~/repo
@@ -18,10 +18,8 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
       - run: yarn prettier-check
-      - run: yarn
 workflows:
   version: 2
   format_check_and_test_and_build_test:
     jobs:
-      - build
-      - test
+      - format_check
