@@ -51,10 +51,30 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
       - run: yarn test
+  build:
+    docker:
+      - image: circleci/node:11.11
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run: yarn build
+      - run: yarn dist
+      - run: ls dist
 workflows:
   version: 2
   format_check_and_test_and_build_test:
     jobs:
-      - format_check
-      - build_test
-      - test
+      - build
+#      - format_check
+#      - build_test
+#      - test
