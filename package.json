@@ -27,6 +27,7 @@
   "dependencies": {
     "electron-is-dev": "^1.1.0",
     "node-sass": "^4.12.0",
+    "prettier": "^1.18.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-scripts": "3.2.0"
@@ -37,7 +38,9 @@
     "test": "rescripts test",
     "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "eject": "react-scripts eject",
-    "dist": "electron-builder -mw"
+    "dist": "electron-builder -mw",
+    "pretty": "prettier --config \"./.prettierrc\" --write \"src/**/*.{js,css,less,scss,ts,tsx,json}\"",
+    "prettier-check": "prettier --check --config \"./.prettierrc\" \"src/**/*.{js,css,less,scss,ts,tsx,json}\""
   },
   "eslintConfig": {
     "extends": "react-app"
