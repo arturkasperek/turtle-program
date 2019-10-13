@@ -22,7 +22,7 @@ jobs:
       - image: circleci/node:11.11
     working_directory: ~/repo
     steps:
-      <<: *setupProject
+      - <: *setupProject
       - run: yarn prettier-check
 workflows:
   version: 2
