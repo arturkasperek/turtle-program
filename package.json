@@ -25,6 +25,7 @@
     }
   },
   "dependencies": {
+    "cross-env": "^6.0.3",
     "electron-is-dev": "^1.1.0",
     "node-sass": "^4.12.0",
     "prettier": "^1.18.2",
@@ -36,7 +37,7 @@
     "start": "rescripts start",
     "build": "rescripts build",
     "test": "rescripts test",
-    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-dev": "cross-env concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "eject": "react-scripts eject",
     "dist": "electron-builder -mw",
     "pretty": "prettier --config \"./.prettierrc\" --write \"src/**/*.{js,css,less,scss,ts,tsx,json}\"",
