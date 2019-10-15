@@ -37,7 +37,7 @@
     "start": "rescripts start",
     "build": "rescripts build",
     "test": "rescripts test",
-    "electron-dev": "cross-env concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "eject": "react-scripts eject",
     "dist": "electron-builder -mw",
     "pretty": "prettier --config \"./.prettierrc\" --write \"src/**/*.{js,css,less,scss,ts,tsx,json}\"",
