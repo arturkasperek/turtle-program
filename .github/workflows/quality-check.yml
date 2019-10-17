@@ -18,7 +18,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: build
+    - name: test
       run: |
         npm i -g yarn
         yarn
@@ -35,7 +35,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: build
+    - name: test formatting
       run: |
         npm i -g yarn
         yarn
