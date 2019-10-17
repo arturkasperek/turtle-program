@@ -1,9 +1,6 @@
 name: Quality Check
 
-on:
-  pull_request:
-    branches:
-    - master
+on: [push]
 
 jobs:
   test:
