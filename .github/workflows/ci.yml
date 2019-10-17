@@ -1,9 +1,12 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches:
+    - master
 
 jobs:
-  build:
+  build-release:
     runs-on: macOS-latest
     strategy:
       matrix:
@@ -14,11 +17,15 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: build
+    - name: build-release
       run: |
-        npm -g yarn
+        npm i -g yarn
         yarn
-        yarn build
-        yarn
+        CI=false yarn build
+        CI=false yarn dist
+    - uses: actions/upload-artifact@master
+      with:
+        name: build-release
+        path: dist
       env:
         CI: true
