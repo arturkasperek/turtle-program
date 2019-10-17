@@ -25,9 +25,7 @@ jobs:
         yarn build
         yarn dist
     - name: Zip Release
-      uses: montudor/action-zip@v0.1.0
-      with:
-        args: zip -r build.zip ./dist
+      run: zip -r build.zip ./dist
     - name: Make Release
       uses: softprops/action-gh-release@v1
       with:
