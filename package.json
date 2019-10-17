@@ -39,7 +39,7 @@
     "test": "rescripts test",
     "electron-dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "eject": "react-scripts eject",
-    "dist": "electron-builder -mw",
+    "dist": "electron-builder -mw --publish=never",
     "pretty": "prettier --config \"./.prettierrc\" --write \"src/**/*.{js,css,less,scss,ts,tsx,json}\"",
     "prettier-check": "prettier --check --config \"./.prettierrc\" \"src/**/*.{js,css,less,scss,ts,tsx,json}\""
   },
