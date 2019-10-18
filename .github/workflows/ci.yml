@@ -23,9 +23,7 @@ jobs:
         yarn
         yarn build
         yarn dist
-    - name: Zip Release
-      run: zip -r build.zip ./dist
     - uses: actions/upload-artifact@master
       with:
         name: build-release
-        path: build.zip
+        path: dist
