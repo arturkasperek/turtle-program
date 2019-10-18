@@ -21,11 +21,11 @@ jobs:
       run: |
         npm i -g yarn
         yarn
-        CI=false yarn build
-        CI=false yarn dist
+        yarn build
+        yarn dist
+    - name: Zip Release
+      run: zip -r build.zip ./dist
     - uses: actions/upload-artifact@master
       with:
         name: build-release
-        path: dist
-      env:
-        CI: true
+        path: build.zip
