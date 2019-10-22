@@ -1,77 +1,77 @@
-body{
-	background-color: lightgray;
-	padding: 1vh;
-	height: 98vh;
+body {
+  background-color: lightgray;
+  padding: 1vh;
+  height: 98vh;
 }
 
-main{
-	display: grid;
-	grid-template-columns: 1fr 1fr;
+main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
-.panels{
-	background-color: gray;
-	border: 1px solid;
-	height: 96vh;
-	margin: 1vh;
-	min-height: 300px;
-	min-width: 300px;
+.panels {
+  background-color: gray;
+  border: 1px solid;
+  height: 96vh;
+  margin: 1vh;
+  min-height: 300px;
+  min-width: 300px;
 }
 
-#rightPanel{
-	display: grid;
-	grid-template-rows: 5fr 1fr;
+#rightPanel {
+  display: grid;
+  grid-template-rows: 5fr 1fr;
 }
 
-#textEditor{
-	background-color: white;
-	border: 1px dotted;
+#textEditor {
+  background-color: white;
+  border: 1px dotted;
 }
 
-#bottomPanel{
-	background-color: gray;
-	border: 1px dotted;
-	display:flex;
+#bottomPanel {
+  background-color: gray;
+  border: 1px dotted;
+  display: flex;
 }
 
-#runButton{
-	background-color: lawngreen;
-	align-self: center;
-	border: 2px solid white;
-	border-radius: 2vh;
-	margin: 1vh;
-	height: 10vh;
-	width: 15vh;
+#runButton {
+  background-color: lawngreen;
+  align-self: center;
+  border: 2px solid white;
+  border-radius: 2vh;
+  margin: 1vh;
+  height: 10vh;
+  width: 15vh;
 }
-#runButton:focus{
-	border: 1px solid red;
+#runButton:focus {
+  border: 1px solid red;
 }
 
-#rangeDiv{
-	display:flex;
-	align-items: center;
-	width: 50vh;
+#rangeDiv {
+  display: flex;
+  align-items: center;
+  width: 50vh;
 }
 
 #range {
-	background-color: black;
-	border-radius: 10vh;
-	height: 0.5vh;
-	width: 50vh;
-	outline: none;
-	-webkit-appearance: none;
+  background-color: black;
+  border-radius: 10vh;
+  height: 0.5vh;
+  width: 50vh;
+  outline: none;
+  -webkit-appearance: none;
 }
 
-#range::-webkit-slider-thumb{
-	-webkit-appearance: none;
-	height:3vh;
-	width:3vh;
-	border-radius: 2vh;
-	background-color:blue;
+#range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 3vh;
+  width: 3vh;
+  border-radius: 2vh;
+  background-color: blue;
 }
 
-#turtleImage, #rabbitImage{
-	width:32px;
-	height:32px;
+#turtleImage,
+#rabbitImage {
+  width: 32px;
+  height: 32px;
 }
-
