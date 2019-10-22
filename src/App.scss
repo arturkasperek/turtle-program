@@ -1,3 +1,92 @@
-.app-container {
-  color: #09d3ac;
+body {
+  background-color: lightgray;
+  padding: 1vh;
+  height: 98vh;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.panels {
+  background-color: gray;
+  border: 1px solid;
+  height: 96vh;
+  margin: 1vh;
+  min-height: 300px;
+  min-width: 300px;
+  display: flex;
+}
+
+#myCanvas {
+  height: 96vh;
+}
+
+#rightPanel {
+  display: grid;
+  grid-template-rows: 5fr 1fr;
+}
+
+#textEditor {
+  background-color: white;
+  border: 1px dotted;
+
+  #ACE_EDITOR {
+    width: 100% !important;
+    height: 100% !important;
+
+    .ace_content {
+      height: 100% !important;
+    }
+  }
+}
+
+#bottomPanel {
+  background-color: gray;
+  border: 1px dotted;
+  display: flex;
+}
+
+#runButton {
+  background-color: lawngreen;
+  align-self: center;
+  border: 2px solid white;
+  border-radius: 2vh;
+  margin: 1vh;
+  height: 10vh;
+  width: 15vh;
+  outline: none;
+}
+#runButton:hover {
+  border: 1px solid red;
+}
+
+#rangeDiv {
+  display: flex;
+  align-items: center;
+  width: 50vh;
+}
+
+#range {
+  background-color: black;
+  border-radius: 10vh;
+  height: 0.5vh;
+  width: 50vh;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+#range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 3vh;
+  width: 3vh;
+  border-radius: 2vh;
+  background-color: blue;
+}
+
+#turtleImage,
+#rabbitImage {
+  width: 32px;
+  height: 32px;
 }
