@@ -5,15 +5,15 @@ import Editor from './components/Editor';
 import Control from './components/Control';
 
 function App() {
-    return (
-        <main>
-            <Canvas/>
-            <div className = "panels" id="rightPanel">
-                <Editor/>
-                <Control/>
-            </div>
-        </main>
-     );
+  return (
+    <main>
+      <Canvas />
+      <div className='panels' id='rightPanel'>
+        <Editor />
+        <Control />
+      </div>
+    </main>
+  );
 }
 
 export default App;
