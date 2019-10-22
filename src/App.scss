@@ -16,6 +16,13 @@ main{
 	margin: 1vh;
 	min-height: 300px;
 	min-width: 300px;
+	display: flex;
+}
+
+
+#myCanvas{
+	height: 96vh;
+
 }
 
 #rightPanel{
@@ -26,6 +33,15 @@ main{
 #textEditor{
 	background-color: white;
 	border: 1px dotted;
+
+	#ACE_EDITOR{
+		width: 100% !important;
+		height: 100% !important;
+
+		.ace_content{
+			height: 100% !important;
+		}
+	}
 }
 
 #bottomPanel{
@@ -42,8 +58,9 @@ main{
 	margin: 1vh;
 	height: 10vh;
 	width: 15vh;
+	outline: none;
 }
-#runButton:focus{
+#runButton:hover{
 	border: 1px solid red;
 }
 
@@ -74,4 +91,6 @@ main{
 	width:32px;
 	height:32px;
 }
+
+
 
