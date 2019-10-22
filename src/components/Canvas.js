@@ -2,15 +2,18 @@ import React from 'react';
 import '../App.scss';
 
 class Canvas extends React.Component {
+  canvasRef = React.createRef();
+
   componentDidMount() {
-    var canvas = document.getElementById('myCanvas');
-    var ctx = canvas.getContext('2d');
+    const canvas = this.canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    console.log('ctx is ', ctx);
   }
 
   render() {
     return (
       <div className='panels'>
-        <canvas id='myCanvas' />
+        <canvas ref={this.canvasRef} />
       </div>
     );
   }
