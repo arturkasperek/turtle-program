@@ -1,5 +1,6 @@
 import React from 'react';
 import '../App.scss';
+import './Canvas.scss';
 
 class Canvas extends React.Component {
   canvasRef = React.createRef();
