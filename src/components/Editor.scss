@@ -1,0 +1,13 @@
+#textEditor {
+  background-color: white;
+  border: 1px dotted;
+
+  #ACE_EDITOR {
+    width: 100% !important;
+    height: 100% !important;
+
+    .ace_content {
+      height: 100% !important;
+    }
+  }
+}

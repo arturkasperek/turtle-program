@@ -1,5 +1,6 @@
 import React from 'react';
 import '../App.scss';
+import './Control.scss';
 import slowIcon from '../img/snail.png';
 import fastIcon from '../img/rabbit.png';
 
