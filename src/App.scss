@@ -5,8 +5,7 @@ body {
 }
 
 main {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
 }
 
 .panels {
@@ -20,6 +19,12 @@ main {
 }
 
 #rightPanel {
+  flex-basis: 0;
+  flex-grow: 1;
   display: grid;
   grid-template-rows: 5fr 1fr;
+}
+
+main {
+  height: 100%;
 }
