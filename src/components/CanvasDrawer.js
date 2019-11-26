@@ -24,10 +24,10 @@ class CanvasDrawer extends Component {
       let pos;
       const animate = (time) => {
         ctx.clearRect(0, 0, this.canvasSize.x, this.canvasSize.y);
-        this.oldToDraw.forEach(func => func());
+        this.oldToDraw.forEach((func) => func());
         if (!start) {
           start = time;
-        };
+        }
         const timeProgress = time - start;
         const progress = timeProgress / timeOfDrawing;
         pos = onDraw(progress);
@@ -48,7 +48,7 @@ class CanvasDrawer extends Component {
     const drawFunc = (widthP, angleP, currentPos) => {
       return (progress) => this.drawLine(ctx, widthP * progress, angleP, currentPos);
     };
-    return this.drawAnimate(ctx, width, drawFunc(width, this.turtleAngle, {...this.currentPos}));
+    return this.drawAnimate(ctx, width, drawFunc(width, this.turtleAngle, { ...this.currentPos }));
   };
 
   drawArcAnimate = (ctx, percentageToDraw, r) => {
@@ -57,7 +57,7 @@ class CanvasDrawer extends Component {
       return (progress) => this.drawArc(ctx, percentageToDrawP * progress, rP, currentPos);
     };
 
-    return this.drawAnimate(ctx, l * percentageToDraw / 100, drawFunc(percentageToDraw, r, this.currentPos));
+    return this.drawAnimate(ctx, (l * percentageToDraw) / 100, drawFunc(percentageToDraw, r, this.currentPos));
   };
 
   async componentDidMount() {
@@ -96,7 +96,7 @@ class CanvasDrawer extends Component {
       };
 
       ctx.clearRect(0, 0, this.canvasSize.x, this.canvasSize.y);
-      this.oldToDraw.forEach(func => func());
+      this.oldToDraw.forEach((func) => func());
     };
   };
 
@@ -123,7 +123,7 @@ class CanvasDrawer extends Component {
   drawLine(ctx, width, turtleAngle, currentPos) {
     const x1 = currentPos.x;
     const y1 = currentPos.y;
-    const r =  width;
+    const r = width;
     const theta = Math.PI * turtleAngle;
     const x2 = x1 + r * Math.cos(theta);
     const y2 = y1 + r * Math.sin(theta);
@@ -142,7 +142,7 @@ class CanvasDrawer extends Component {
   }
 
   rotate(angle) {
-    this.turtleAngle+= angle / 180;
+    this.turtleAngle += angle / 180;
   }
 
   render() {
