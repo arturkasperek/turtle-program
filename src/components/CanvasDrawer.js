@@ -3,6 +3,10 @@ import { render } from 'react-dom';
 import './CanvasDrawer.scss';
 
 class CanvasDrawer extends Component {
+  static defaultProps = {
+    getDrawingRef: () => {},
+  };
+
   canvasRef = React.createRef();
   canvasDrawerRef = React.createRef();
   currentPos = {
@@ -30,7 +34,7 @@ class CanvasDrawer extends Component {
         }
         const timeProgress = time - start;
         const progress = timeProgress / timeOfDrawing;
-        pos = onDraw(progress);
+        pos = onDraw(progress > 1 ? 1 : progress);
 
         if (timeProgress < timeOfDrawing) {
           window.requestAnimationFrame(animate);
@@ -67,19 +71,11 @@ class CanvasDrawer extends Component {
 
     window.addEventListener('resize', adjustCanvasSize);
     adjustCanvasSize();
-
-    await this.drawLineAnimate(ctx, 100);
-    this.rotate(50);
-    await this.drawLineAnimate(ctx, 50);
-    this.rotate(90);
-    await this.drawLineAnimate(ctx, 50);
-    this.rotate(90);
-    await this.drawArcAnimate(ctx, 20, 100);
-    await this.drawArcAnimate(ctx, 20, 20);
-    this.rotate(40);
-    await this.drawLineAnimate(ctx, 50);
-    this.rotate(90);
-    await this.drawLineAnimate(ctx, 100);
+    this.props.getDrawingRef({
+      drawLine: (...props) => this.drawLineAnimate(ctx, ...props),
+      drawArc: (...props) => this.drawArcAnimate(ctx, ...props),
+      rotate: (...props) => this.rotate(...props),
+    });
   }
 
   adjustCanvasSizeFactory = (ctx) => {
