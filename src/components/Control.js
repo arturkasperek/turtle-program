@@ -6,7 +6,7 @@ import fastIcon from '../img/rabbit.png';
 
 class Control extends React.Component {
   runDrawing = async () => {
-    const {drawLine, drawArc, rotate} = this.props.drawFunctions;
+    const { drawLine, drawArc, rotate } = this.props.drawFunctions;
     await drawLine(100);
     await rotate(50);
     await drawLine(50);
@@ -24,7 +24,9 @@ class Control extends React.Component {
   render() {
     return (
       <div id='bottomPanel'>
-        <button onClick={this.runDrawing} id='runButton'>Run</button>
+        <button onClick={this.runDrawing} id='runButton'>
+          Run
+        </button>
         <div id='rangeDiv'>
           <div id='turtleImage'>
             <img src={slowIcon} width='32' height='32' />

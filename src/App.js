@@ -10,12 +10,10 @@ function App() {
 
   return (
     <main>
-      <CanvasDrawer getDrawingRef={(drawingFunctions)=>setDrawFunctions(drawingFunctions)} />
+      <CanvasDrawer getDrawingRef={(drawingFunctions) => setDrawFunctions(drawingFunctions)} />
       <div className='panels' id='rightPanel'>
         <Editor />
-        {!isEmpty(drawFunctions) && (
-          <Control drawFunctions={drawFunctions} />
-        )}
+        {!isEmpty(drawFunctions) && <Control drawFunctions={drawFunctions} />}
       </div>
     </main>
   );
