@@ -17,6 +17,11 @@ class CanvasDrawer extends Component {
     y: 0,
   };
 
+  constructor(){
+    super();
+    console.log("obj created");
+  }
+
   drawAnimate = (ctx, width, onDraw) => {
     return new Promise((resolve) => {
       const timeOfDrawing = (width / 100) * this.speed * 1000;
@@ -68,6 +73,8 @@ class CanvasDrawer extends Component {
     window.addEventListener('resize', adjustCanvasSize);
     adjustCanvasSize();
 
+    console.log("did mount");
+
     await this.drawLineAnimate(ctx, 100);
     this.rotate(50);
     await this.drawLineAnimate(ctx, 50);
@@ -80,6 +87,7 @@ class CanvasDrawer extends Component {
     await this.drawLineAnimate(ctx, 50);
     this.rotate(90);
     await this.drawLineAnimate(ctx, 100);
+
   }
 
   adjustCanvasSizeFactory = (ctx) => {
@@ -153,5 +161,6 @@ class CanvasDrawer extends Component {
     );
   }
 }
+
 
 export default CanvasDrawer;
