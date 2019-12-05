@@ -7,11 +7,14 @@ class CanvasDrawer extends Component {
     getDrawingRef: () => {},
   };
 
+  defaultInitialPos = {
+    x: 100,
+    y: 100,
+  };
   canvasRef = React.createRef();
   canvasDrawerRef = React.createRef();
   currentPos = {
-    x: 100,
-    y: 100,
+    ...this.defaultInitialPos,
   };
   turtleAngle = 0;
   speed = 1;
@@ -19,6 +22,16 @@ class CanvasDrawer extends Component {
   canvasSize = {
     x: 0,
     y: 0,
+  };
+
+  reset = (ctx) => {
+    ctx.clearRect(0, 0, this.canvasSize.x, this.canvasSize.y);
+    this.currentPos = {
+      ...this.defaultInitialPos,
+    };
+    this.turtleAngle = 0;
+
+    this.oldToDraw = [];
   };
 
   drawAnimate = (ctx, width, onDraw) => {
@@ -75,6 +88,7 @@ class CanvasDrawer extends Component {
       drawLine: (...props) => this.drawLineAnimate(ctx, ...props),
       drawArc: (...props) => this.drawArcAnimate(ctx, ...props),
       rotate: (...props) => this.rotate(...props),
+      reset: () => this.reset(ctx),
     });
   }
 

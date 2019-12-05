@@ -7,13 +7,14 @@ import Control from './components/Control';
 
 function App() {
   const [drawFunctions, setDrawFunctions] = useState({});
+  const [commands, setCommands] = useState([]);
 
   return (
     <main>
       <CanvasDrawer getDrawingRef={(drawingFunctions) => setDrawFunctions(drawingFunctions)} />
       <div className='panels' id='rightPanel'>
-        <Editor />
-        {!isEmpty(drawFunctions) && <Control drawFunctions={drawFunctions} />}
+        <Editor setCommands={setCommands} />
+        {!isEmpty(drawFunctions) && <Control commands={commands} drawFunctions={drawFunctions} />}
       </div>
     </main>
   );
