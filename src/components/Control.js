@@ -6,7 +6,7 @@ import fastIcon from '../img/rabbit.png';
 
 class Control extends React.Component {
   runDrawing = async () => {
-    const { drawLine, drawArc, rotate, reset } = this.props.drawFunctions;
+    const { drawLine, drawArc, rotate, reset, downloadCanvas } = this.props.drawFunctions;
 
     reset();
     for (let i = 0; i < this.props.commands.length; i++) {
@@ -23,6 +23,7 @@ class Control extends React.Component {
           break;
       }
     }
+      downloadCanvas();
   };
 
   render() {

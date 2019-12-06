@@ -89,6 +89,7 @@ class CanvasDrawer extends Component {
       drawArc: (...props) => this.drawArcAnimate(ctx, ...props),
       rotate: (...props) => this.rotate(...props),
       reset: () => this.reset(ctx),
+      downloadCanvas: () => this.downloadCanvas()
     });
   }
 
@@ -161,6 +162,16 @@ class CanvasDrawer extends Component {
         <canvas width={'395px'} height={'646px'} ref={this.canvasRef} />
       </div>
     );
+  }
+
+  // Funkcja pobiera widoczny na ekranie rysunek 
+  downloadCanvas(){
+    const a = document.createElement('a')
+    document.body.appendChild(a);
+    a.href = this.canvasRef.current.toDataURL();
+    a.download = "cnv.png";
+    a.click();
+    document.body.removeChild(a);
   }
 }
 
