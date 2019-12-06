@@ -5,13 +5,19 @@ import * as esprima from 'esprima';
 import '../App.scss';
 import './Editor.scss';
 
-const AllowedFunNames = ['drawLine', 'drawArc', 'rotate'];
+const AllowedFunNames = ['drawLine', 'drawArc', 'rotate', 'repeat', 'end'];
 
 class Editor extends React.Component {
   validateCode = (code) => {
     let commands = [];
     try {
       const parsed = esprima.parseScript(code);
+      // Zmienna pomocnicza informująca czy dane komendy powtarzać
+      var shouldRepeat = false;
+      // W tej tablicy przechowywane są obiekty "parsed.body"
+      var funNames = [];
+      // Zmienna pomocnicza potrzebna do zakodowania ilości powtórzeń pętli
+      var loops = 0;
 
       parsed.body.forEach((i) => {
         if (i.type === 'ExpressionStatement' && i.expression.type === 'CallExpression') {
@@ -20,10 +26,39 @@ class Editor extends React.Component {
           if (AllowedFunNames.indexOf(funName) === -1) {
             throw new Error('Not allowed func');
           }
-          commands.push({
-            name: funName,
-            args: get(i.expression, 'arguments', []).map((i) => i.value),
-          });
+
+          // Wykrycie pętli
+          if (funName === 'repeat') {
+            loops = i.expression.arguments[0].value;
+            shouldRepeat = true;
+          }
+
+          // Zapisywanie a następnie wykonanie komend po wykryciu end
+          if (shouldRepeat) {
+            if (funName === 'end') {
+              shouldRepeat = false;
+              for (var j = 0; j < loops; j++) {
+                funNames.forEach((k) => {
+                  if (k.expression.callee.name !== 'repeat' && k.expression.callee.name !== 'end')
+                    commands.push({
+                      name: k.expression.callee.name,
+                      args: get(k.expression, 'arguments', []).map((k) => k.value),
+                    });
+                });
+              }
+              funNames = [];
+              loops = 0;
+            } else {
+              funNames.push(i);
+            }
+          }
+
+          // Odrzucenie komend repeat i end pownieważ nie odpowiadają one za rysowanie
+          if (funName !== 'repeat' && funName !== 'end')
+            commands.push({
+              name: funName,
+              args: get(i.expression, 'arguments', []).map((i) => i.value),
+            });
         }
       });
 
