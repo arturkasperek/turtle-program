@@ -17,7 +17,6 @@ class CanvasDrawer extends Component {
     ...this.defaultInitialPos,
   };
   turtleAngle = 0;
-  speed = 1;
   oldToDraw = [];
   canvasSize = {
     x: 0,
@@ -36,7 +35,7 @@ class CanvasDrawer extends Component {
 
   drawAnimate = (ctx, width, onDraw) => {
     return new Promise((resolve) => {
-      const timeOfDrawing = (width / 100) * this.speed * 1000;
+      const timeOfDrawing = (width / 100) * (1.01 - this.props.speed / 100) * 1000; //tutaj sobie ustawie prędkość
       let start = null;
       let pos;
       const animate = (time) => {

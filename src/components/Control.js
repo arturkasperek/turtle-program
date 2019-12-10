@@ -25,6 +25,10 @@ class Control extends React.Component {
     }
   };
 
+  onRangeChange = (e) => {
+    this.props.setSpeed(e.target.value);
+  };
+
   render() {
     return (
       <div id='bottomPanel'>
@@ -35,7 +39,7 @@ class Control extends React.Component {
           <div id='turtleImage'>
             <img src={slowIcon} width='32' height='32' />
           </div>
-          <input id='range' type='range' name='' min='0' max='100' />
+          <input value={this.props.speed} onChange={this.onRangeChange} id='range' type='range' name='' min='0' max='100' />
           <div id='rabbitImage'>
             <img src={fastIcon} width='25' height='25' />
           </div>
