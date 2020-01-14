@@ -6,7 +6,7 @@ import fastIcon from '../img/rabbit.png';
 
 class Control extends React.Component {
   runDrawing = async () => {
-    const { drawLine, drawArc, rotate, reset } = this.props.drawFunctions;
+    const { drawLine, drawArc, rotate, reset, penUp, penDown } = this.props.drawFunctions;
 
     reset();
     for (let i = 0; i < this.props.commands.length; i++) {
@@ -21,8 +21,18 @@ class Control extends React.Component {
         case 'rotate':
           await rotate(...command.args);
           break;
+        case 'penUp':
+          await penUp();
+          break;
+        case 'penDown':
+          await penDown();
+          break;
       }
     }
+  };
+
+  onRangeChange = (e) => {
+    this.props.setSpeed(e.target.value);
   };
 
   render() {
@@ -35,7 +45,7 @@ class Control extends React.Component {
           <div id='turtleImage'>
             <img src={slowIcon} width='32' height='32' />
           </div>
-          <input id='range' type='range' name='' min='0' max='100' />
+          <input value={this.props.speed} onChange={this.onRangeChange} id='range' type='range' name='' min='0' max='100' />
           <div id='rabbitImage'>
             <img src={fastIcon} width='25' height='25' />
           </div>

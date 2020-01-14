@@ -37,6 +37,8 @@
     "react-scripts": "3.2.0"
   },
   "scripts": {
+    "web-start": "parcel index.html",
+    "web-build": "parcel build --public-url '.' index.html",
     "start": "rescripts start",
     "build": "rescripts build",
     "test": "rescripts test --watchAll=false",
@@ -53,8 +55,7 @@
   "browserslist": {
     "production": [
       ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "not dead"
     ],
     "development": [
       "last 1 chrome version",
@@ -63,11 +64,18 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/preset-react": "^7.7.4",
     "@rescripts/cli": "^0.0.12",
     "@rescripts/rescript-env": "^0.0.10",
+    "babel-plugin-transform-runtime": "^7.0.0-beta.3",
     "concurrently": "^5.0.0",
     "electron": "^6.0.12",
     "electron-builder": "^21.2.0",
+    "parcel-bundler": "^1.12.4",
     "typescript": "^3.6.4",
     "wait-on": "^3.3.0"
   }
