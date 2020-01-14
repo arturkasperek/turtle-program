@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import './CanvasDrawer.scss';
 
 class CanvasDrawer extends Component {
+  isPenUp = false;
   static defaultProps = {
     getDrawingRef: () => {},
   };
@@ -46,12 +47,13 @@ class CanvasDrawer extends Component {
         }
         const timeProgress = time - start;
         const progress = timeProgress / timeOfDrawing;
-        pos = onDraw(progress > 1 ? 1 : progress);
+        pos = onDraw(progress > 1 ? 1 : progress, this.isPenUp);
 
         if (timeProgress < timeOfDrawing) {
           window.requestAnimationFrame(animate);
         } else {
-          this.oldToDraw.push(() => onDraw(1));
+          const ipu = this.isPenUp;
+          this.oldToDraw.push(() => onDraw(1, ipu));
           this.currentPos = pos;
           resolve();
         }
@@ -62,7 +64,7 @@ class CanvasDrawer extends Component {
 
   drawLineAnimate = (ctx, width) => {
     const drawFunc = (widthP, angleP, currentPos) => {
-      return (progress) => this.drawLine(ctx, widthP * progress, angleP, currentPos);
+      return (progress, isPenUp) => this.drawLine(ctx, widthP * progress, angleP, currentPos, isPenUp);
     };
     return this.drawAnimate(ctx, width, drawFunc(width, this.turtleAngle, { ...this.currentPos }));
   };
@@ -70,7 +72,7 @@ class CanvasDrawer extends Component {
   drawArcAnimate = (ctx, percentageToDraw, r) => {
     const l = 2 * Math.PI * r;
     const drawFunc = (percentageToDrawP, rP, currentPos) => {
-      return (progress) => this.drawArc(ctx, percentageToDrawP * progress, rP, currentPos);
+      return (progress, isPenUp) => this.drawArc(ctx, percentageToDrawP * progress, rP, currentPos, isPenUp);
     };
 
     return this.drawAnimate(ctx, (l * percentageToDraw) / 100, drawFunc(percentageToDraw, r, this.currentPos));
@@ -87,6 +89,8 @@ class CanvasDrawer extends Component {
       drawLine: (...props) => this.drawLineAnimate(ctx, ...props),
       drawArc: (...props) => this.drawArcAnimate(ctx, ...props),
       rotate: (...props) => this.rotate(...props),
+      penUp: () => this.penUp(),
+      penDown: () => this.penDown(),
       reset: () => this.reset(ctx),
     });
   }
@@ -109,7 +113,7 @@ class CanvasDrawer extends Component {
     };
   };
 
-  drawArc(ctx, percentageToDraw, r, currentPos) {
+  drawArc(ctx, percentageToDraw, r, currentPos, isPenUp) {
     const x1 = currentPos.x;
     const y1 = currentPos.y;
     const toDraw = percentageToDraw / 100;
@@ -120,6 +124,7 @@ class CanvasDrawer extends Component {
     const y2 = c2 + Math.sin(angle) * r;
 
     ctx.beginPath();
+    ctx.lineWidth = isPenUp ? 0.001 : 2;
     ctx.arc(c1, c2, r, Math.PI, angle);
     ctx.stroke();
 
@@ -129,7 +134,7 @@ class CanvasDrawer extends Component {
     };
   }
 
-  drawLine(ctx, width, turtleAngle, currentPos) {
+  drawLine(ctx, width, turtleAngle, currentPos, isPenUp) {
     const x1 = currentPos.x;
     const y1 = currentPos.y;
     const r = width;
@@ -137,17 +142,22 @@ class CanvasDrawer extends Component {
     const x2 = x1 + r * Math.cos(theta);
     const y2 = y1 + r * Math.sin(theta);
     ctx.lineCap = 'round';
-    ctx.lineWidth = 2;
 
     ctx.beginPath();
+    ctx.lineWidth = isPenUp ? 0.001 : 2; //tu działa ispenup
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.stroke();
-
     return {
       x: x2,
       y: y2,
     };
+  }
+  penUp() {
+    this.isPenUp = true;
+  }
+  penDown() {
+    this.isPenUp = false;
   }
 
   rotate(angle) {
