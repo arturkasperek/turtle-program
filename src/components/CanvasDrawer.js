@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import './CanvasDrawer.scss';
 import turtleIcon from '../img/turtle.png';
 
-const TO_RADIANS = Math.PI/180;
+const TO_RADIANS = Math.PI / 180;
 
 class CanvasDrawer extends Component {
   isPenUp = false;
@@ -127,7 +127,7 @@ class CanvasDrawer extends Component {
     ctx.save();
     ctx.translate(pos.x, pos.y);
     ctx.rotate(angle * TO_RADIANS);
-    ctx.drawImage(this.turtleImage, -(this.turtleImage.width/2), -(this.turtleImage.height/2));
+    ctx.drawImage(this.turtleImage, -(this.turtleImage.width / 2), -(this.turtleImage.height / 2));
     ctx.restore();
   }
 
@@ -150,7 +150,7 @@ class CanvasDrawer extends Component {
     ctx.arc(c1, c2, r, Math.PI, angle);
     ctx.stroke();
 
-    if ( !redraw ) {
+    if (!redraw) {
       this.drawTurtle(ctx, newPos);
     }
 
@@ -176,7 +176,7 @@ class CanvasDrawer extends Component {
     ctx.lineTo(x2, y2);
     ctx.stroke();
 
-    if ( !redraw ) {
+    if (!redraw) {
       this.drawTurtle(ctx, newPos, turtleAngle * 180);
     }
 
