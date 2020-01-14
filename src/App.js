@@ -11,7 +11,7 @@ function App() {
 
   return (
     <main>
-      <CanvasDrawer getDrawingRef={(drawingFunctions) => setDrawFunctions(drawingFunctions)} />
+      <CanvasDrawer getDrawingRef={(drawingFunctions) => setDrawFunctions(drawingFunctions)} commands={commands} />
       <div className='panels' id='rightPanel'>
         <Editor setCommands={setCommands} />
         {!isEmpty(drawFunctions) && <Control commands={commands} drawFunctions={drawFunctions} />}
