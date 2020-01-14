@@ -38,7 +38,7 @@
   },
   "scripts": {
     "web-start": "parcel index.html",
-    "web-build": "parcel build index.html",
+    "web-build": "parcel build --public-url '.' index.html",
     "start": "rescripts start",
     "build": "rescripts build",
     "test": "rescripts test --watchAll=false",
