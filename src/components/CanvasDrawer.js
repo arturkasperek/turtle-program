@@ -3,6 +3,9 @@ import { render } from 'react-dom';
 import './CanvasDrawer.scss';
 
 class CanvasDrawer extends Component {
+  lineWidth = 2; //grubosc lini standardowa
+  isPenUp = false;
+
   static defaultProps = {
     getDrawingRef: () => {},
   };
@@ -46,12 +49,13 @@ class CanvasDrawer extends Component {
         }
         const timeProgress = time - start;
         const progress = timeProgress / timeOfDrawing;
-        pos = onDraw(progress > 1 ? 1 : progress);
+        pos = onDraw(progress > 1 ? 1 : progress, this.isPenUp);
 
         if (timeProgress < timeOfDrawing) {
           window.requestAnimationFrame(animate);
         } else {
-          this.oldToDraw.push(() => onDraw(1));
+          const ipu = this.isPenUp;
+          this.oldToDraw.push(() => onDraw(1, ipu));
           this.currentPos = pos;
           resolve();
         }
@@ -62,7 +66,7 @@ class CanvasDrawer extends Component {
 
   drawLineAnimate = (ctx, width) => {
     const drawFunc = (widthP, angleP, currentPos) => {
-      return (progress) => this.drawLine(ctx, widthP * progress, angleP, currentPos);
+      return (progress, isPenUp) => this.drawLine(ctx, widthP * progress, angleP, currentPos, isPenUp);
     };
     return this.drawAnimate(ctx, width, drawFunc(width, this.turtleAngle, { ...this.currentPos }));
   };
@@ -87,6 +91,8 @@ class CanvasDrawer extends Component {
       drawLine: (...props) => this.drawLineAnimate(ctx, ...props),
       drawArc: (...props) => this.drawArcAnimate(ctx, ...props),
       rotate: (...props) => this.rotate(...props),
+      penUp: () => this.penUp(),
+      penDown: () => this.penDown(),
       reset: () => this.reset(ctx),
     });
   }
@@ -129,7 +135,7 @@ class CanvasDrawer extends Component {
     };
   }
 
-  drawLine(ctx, width, turtleAngle, currentPos) {
+  drawLine(ctx, width, turtleAngle, currentPos, isPenUp) {
     const x1 = currentPos.x;
     const y1 = currentPos.y;
     const r = width;
@@ -137,17 +143,26 @@ class CanvasDrawer extends Component {
     const x2 = x1 + r * Math.cos(theta);
     const y2 = y1 + r * Math.sin(theta);
     ctx.lineCap = 'round';
-    ctx.lineWidth = 2;
 
     ctx.beginPath();
+    ctx.lineWidth = isPenUp ? 0.001 : 2; //tu działa ispenup
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.stroke();
-
     return {
       x: x2,
       y: y2,
     };
+  }
+  penUp() {
+    //funkcja
+    console.log('dziala penup');
+    this.isPenUp = true;
+  }
+  penDown() {
+    //funkcja
+    console.log('dziala penDown');
+    this.isPenUp = false;
   }
 
   rotate(angle) {
@@ -164,3 +179,12 @@ class CanvasDrawer extends Component {
 }
 
 export default CanvasDrawer;
+
+/*
+drawLine(10)
+penUp()
+drawLine(10)
+penDown()
+drawline(10)
+
+*/

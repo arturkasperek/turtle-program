@@ -5,7 +5,7 @@ import * as esprima from 'esprima';
 import '../App.scss';
 import './Editor.scss';
 
-const AllowedFunNames = ['drawLine', 'drawArc', 'rotate'];
+const AllowedFunNames = ['drawLine', 'drawArc', 'rotate', 'penUp', 'penDown'];
 
 class Editor extends React.Component {
   validateCode = (code) => {
@@ -20,6 +20,7 @@ class Editor extends React.Component {
           if (AllowedFunNames.indexOf(funName) === -1) {
             throw new Error('Not allowed func');
           }
+
           commands.push({
             name: funName,
             args: get(i.expression, 'arguments', []).map((i) => i.value),
