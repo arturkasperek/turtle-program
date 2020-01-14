@@ -72,7 +72,7 @@ class CanvasDrawer extends Component {
   drawArcAnimate = (ctx, percentageToDraw, r) => {
     const l = 2 * Math.PI * r;
     const drawFunc = (percentageToDrawP, rP, currentPos) => {
-      return (progress) => this.drawArc(ctx, percentageToDrawP * progress, rP, currentPos);
+      return (progress, isPenUp) => this.drawArc(ctx, percentageToDrawP * progress, rP, currentPos, isPenUp);
     };
 
     return this.drawAnimate(ctx, (l * percentageToDraw) / 100, drawFunc(percentageToDraw, r, this.currentPos));
@@ -113,7 +113,7 @@ class CanvasDrawer extends Component {
     };
   };
 
-  drawArc(ctx, percentageToDraw, r, currentPos) {
+  drawArc(ctx, percentageToDraw, r, currentPos, isPenUp) {
     const x1 = currentPos.x;
     const y1 = currentPos.y;
     const toDraw = percentageToDraw / 100;
@@ -124,6 +124,7 @@ class CanvasDrawer extends Component {
     const y2 = c2 + Math.sin(angle) * r;
 
     ctx.beginPath();
+    ctx.lineWidth = isPenUp ? 0.001 : 2;
     ctx.arc(c1, c2, r, Math.PI, angle);
     ctx.stroke();
 
