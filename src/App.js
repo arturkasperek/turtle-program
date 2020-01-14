@@ -12,7 +12,6 @@ function App() {
 
   return (
     <main>
-
       <CanvasDrawer speed={speed} getDrawingRef={(drawingFunctions) => setDrawFunctions(drawingFunctions)} commands={commands} />
 
       <div className='panels' id='rightPanel'>

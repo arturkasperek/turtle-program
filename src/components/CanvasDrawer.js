@@ -6,7 +6,6 @@ import turtleIcon from '../img/turtle.png';
 const TO_RADIANS = Math.PI / 180;
 
 class CanvasDrawer extends Component {
-
   constructor(props) {
     super(props);
     this.canvasRedraw = this.canvasRedraw.bind(this);
