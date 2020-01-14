@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import './CanvasDrawer.scss';
+import Canvas2Image from './CanvasDrawerSupportLib/canvas2image';
 
 class CanvasDrawer extends Component {
   static defaultProps = {
@@ -89,7 +90,7 @@ class CanvasDrawer extends Component {
       drawArc: (...props) => this.drawArcAnimate(ctx, ...props),
       rotate: (...props) => this.rotate(...props),
       reset: () => this.reset(ctx),
-      downloadCanvas: () => this.downloadCanvas()
+      downloadCanvas: () => this.downloadCanvas(),
     });
   }
 
@@ -159,19 +160,28 @@ class CanvasDrawer extends Component {
   render() {
     return (
       <div className={'canvas-drawer'} ref={this.canvasDrawerRef}>
-        <canvas width={'395px'} height={'646px'} ref={this.canvasRef} />
+        <canvas width={'20000px'} height={'64000px'} ref={this.canvasRef} />
       </div>
     );
   }
 
-  // Funkcja pobiera widoczny na ekranie rysunek 
-  downloadCanvas(){
-    const a = document.createElement('a')
+  // Funkcja pobiera widoczny na ekranie rysunek
+  downloadCanvas() {
+    // const a = document.createElement('a');
+    // a.style.width = '100000px';
+    // a.style.height = '100000px';
+    // document.body.appendChild(a);
+    // a.href = this.canvasRef.current.toDataURL();
+    // a.download = 'cnv.png';
+    // a.click();
+    // document.body.removeChild(a);
+
+    const a = document.createElement('a');
+    a.src = this.canvasRef.current.toDataURL();
     document.body.appendChild(a);
-    a.href = this.canvasRef.current.toDataURL();
-    a.download = "cnv.png";
-    a.click();
-    document.body.removeChild(a);
+    //Canvas2Image.saveAsPNG(document.getElementsByClassName('canvas-drawer'));
+    Canvas2Image.saveAsPNG(a, 300, 300);
+    console.log('dziala');
   }
 }
 
