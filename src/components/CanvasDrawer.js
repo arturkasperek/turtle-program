@@ -3,9 +3,7 @@ import { render } from 'react-dom';
 import './CanvasDrawer.scss';
 
 class CanvasDrawer extends Component {
-  lineWidth = 2; //grubosc lini standardowa
   isPenUp = false;
-
   static defaultProps = {
     getDrawingRef: () => {},
   };
@@ -155,13 +153,9 @@ class CanvasDrawer extends Component {
     };
   }
   penUp() {
-    //funkcja
-    console.log('dziala penup');
     this.isPenUp = true;
   }
   penDown() {
-    //funkcja
-    console.log('dziala penDown');
     this.isPenUp = false;
   }
 
@@ -179,12 +173,3 @@ class CanvasDrawer extends Component {
 }
 
 export default CanvasDrawer;
-
-/*
-drawLine(10)
-penUp()
-drawLine(10)
-penDown()
-drawline(10)
-
-*/
