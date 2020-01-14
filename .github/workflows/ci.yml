@@ -6,6 +6,31 @@ on:
     - master
 
 jobs:
+  publish:
+    runs-on: macOS-10.14
+    strategy:
+      matrix:
+        node-version: [11.x]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: build-release
+        run: |
+          npm i -g yarn
+          yarn
+          yarn build
+          yarn web-build
+      - name: Deploy
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v1
+        with:
+          target_branch: gh-pages
+          build_dir: dist
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
   build-release-mac:
     runs-on: macOS-10.14
     strategy:
