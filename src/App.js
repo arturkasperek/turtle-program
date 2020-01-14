@@ -12,7 +12,8 @@ function App() {
 
   return (
     <main>
-      <CanvasDrawer speed={speed} getDrawingRef={(drawingFunctions) => setDrawFunctions(drawingFunctions)} />
+      <CanvasDrawer speed={speed} getDrawingRef={(drawingFunctions) => setDrawFunctions(drawingFunctions)} commands={commands} />
+
       <div className='panels' id='rightPanel'>
         <Editor setCommands={setCommands} />
         {!isEmpty(drawFunctions) && <Control speed={speed} setSpeed={setSpeed} commands={commands} drawFunctions={drawFunctions} />}

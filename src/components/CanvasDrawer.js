@@ -6,7 +6,14 @@ import turtleIcon from '../img/turtle.png';
 const TO_RADIANS = Math.PI / 180;
 
 class CanvasDrawer extends Component {
+  constructor(props) {
+    super(props);
+    this.canvasRedraw = this.canvasRedraw.bind(this);
+    this.downloadCanvas = this.downloadCanvas.bind(this);
+  }
+
   isPenUp = false;
+
   static defaultProps = {
     getDrawingRef: () => {},
   };
@@ -15,8 +22,18 @@ class CanvasDrawer extends Component {
     x: 100,
     y: 100,
   };
+
+  extremePos = {
+    xmin: 0,
+    xmax: 0,
+    ymin: 0,
+    ymax: 0,
+  };
+
   canvasRef = React.createRef();
   canvasDrawerRef = React.createRef();
+  virtualCanvasRef = React.createRef();
+
   currentPos = {
     ...this.defaultInitialPos,
   };
@@ -32,6 +49,12 @@ class CanvasDrawer extends Component {
     ctx.clearRect(0, 0, this.canvasSize.x, this.canvasSize.y);
     this.currentPos = {
       ...this.defaultInitialPos,
+    };
+    this.extremePos = {
+      xmin: 0,
+      xmax: 0,
+      ymin: 0,
+      ymax: 0,
     };
     this.turtleAngle = 0;
 
@@ -52,6 +75,19 @@ class CanvasDrawer extends Component {
         const timeProgress = time - start;
         const progress = timeProgress / timeOfDrawing;
         pos = onDraw(progress > 1 ? 1 : progress, this.isPenUp, false);
+
+        if (pos.x > this.extremePos.xmax) {
+          this.extremePos.xmax = pos.x;
+        }
+        if (pos.x < this.extremePos.xmin) {
+          this.extremePos.xmin = pos.x;
+        }
+        if (pos.y > this.extremePos.ymax) {
+          this.extremePos.ymax = pos.y;
+        }
+        if (pos.y < this.extremePos.ymin) {
+          this.extremePos.ymin = pos.y;
+        }
 
         if (timeProgress < timeOfDrawing) {
           window.requestAnimationFrame(animate);
@@ -193,10 +229,46 @@ class CanvasDrawer extends Component {
     this.turtleAngle += angle / 180;
   }
 
+  //Funkcja tworząca png z canvasa
+  downloadCanvas() {
+    this.virtualCanvasRef.current.width = this.extremePos.xmax - this.extremePos.xmin + this.defaultInitialPos.x;
+    this.virtualCanvasRef.current.height = this.extremePos.ymax - this.extremePos.ymin + this.defaultInitialPos.y;
+    this.canvasRedraw(this.virtualCanvasRef.current.getContext('2d'), {
+      x: this.extremePos.xmin > 0 ? 0 : 1.5 * this.defaultInitialPos.x - this.extremePos.xmin,
+      y: this.extremePos.ymin > 0 ? 0 : 1.5 * this.defaultInitialPos.y - this.extremePos.ymin,
+    });
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.href = this.virtualCanvasRef.current.toDataURL();
+    a.download = 'MyDraw.png';
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  //Funkcja do przerysowywania canvasa
+  canvasRedraw(ctx, position) {
+    let rote = 0;
+    for (let i = 0; i < this.props.commands.length; i++) {
+      const command = this.props.commands[i];
+      switch (command.name) {
+        case 'drawLine':
+          position = this.drawLine(ctx, ...command.args, rote, position);
+          break;
+        case 'drawArc':
+          position = this.drawArc(ctx, ...command.args, position);
+          break;
+        case 'rotate':
+          rote += command.args[0] / 180;
+          break;
+      }
+    }
+  }
+
   render() {
     return (
       <div className={'canvas-drawer'} ref={this.canvasDrawerRef}>
-        <canvas width={'395px'} height={'646px'} ref={this.canvasRef} />
+        <canvas id='cvs' width={'200px'} height={'640px'} ref={this.canvasRef} />
+        <canvas style={{ display: 'none' }} ref={this.virtualCanvasRef} />
       </div>
     );
   }
