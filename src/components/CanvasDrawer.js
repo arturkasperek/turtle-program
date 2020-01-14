@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import './CanvasDrawer.scss';
+import turtleIcon from '../img/turtle.png';
+
+const TO_RADIANS = Math.PI/180;
 
 class CanvasDrawer extends Component {
   isPenUp = false;
@@ -23,6 +26,7 @@ class CanvasDrawer extends Component {
     x: 0,
     y: 0,
   };
+  turtleImage;
 
   reset = (ctx) => {
     ctx.clearRect(0, 0, this.canvasSize.x, this.canvasSize.y);
@@ -47,13 +51,13 @@ class CanvasDrawer extends Component {
         }
         const timeProgress = time - start;
         const progress = timeProgress / timeOfDrawing;
-        pos = onDraw(progress > 1 ? 1 : progress, this.isPenUp);
+        pos = onDraw(progress > 1 ? 1 : progress, this.isPenUp, false);
 
         if (timeProgress < timeOfDrawing) {
           window.requestAnimationFrame(animate);
         } else {
           const ipu = this.isPenUp;
-          this.oldToDraw.push(() => onDraw(1, ipu));
+          this.oldToDraw.push(() => onDraw(1, ipu, true));
           this.currentPos = pos;
           resolve();
         }
@@ -64,7 +68,7 @@ class CanvasDrawer extends Component {
 
   drawLineAnimate = (ctx, width) => {
     const drawFunc = (widthP, angleP, currentPos) => {
-      return (progress, isPenUp) => this.drawLine(ctx, widthP * progress, angleP, currentPos, isPenUp);
+      return (progress, isPenUp, redraw) => this.drawLine(ctx, widthP * progress, angleP, currentPos, isPenUp, redraw);
     };
     return this.drawAnimate(ctx, width, drawFunc(width, this.turtleAngle, { ...this.currentPos }));
   };
@@ -72,10 +76,15 @@ class CanvasDrawer extends Component {
   drawArcAnimate = (ctx, percentageToDraw, r) => {
     const l = 2 * Math.PI * r;
     const drawFunc = (percentageToDrawP, rP, currentPos) => {
-      return (progress, isPenUp) => this.drawArc(ctx, percentageToDrawP * progress, rP, currentPos, isPenUp);
+      return (progress, isPenUp, redraw) => this.drawArc(ctx, percentageToDrawP * progress, rP, currentPos, isPenUp, redraw);
     };
 
     return this.drawAnimate(ctx, (l * percentageToDraw) / 100, drawFunc(percentageToDraw, r, this.currentPos));
+  };
+
+  loadTurtleIcon = () => {
+    this.turtleImage = new Image();
+    this.turtleImage.src = turtleIcon;
   };
 
   async componentDidMount() {
@@ -85,6 +94,7 @@ class CanvasDrawer extends Component {
 
     window.addEventListener('resize', adjustCanvasSize);
     adjustCanvasSize();
+    this.loadTurtleIcon();
     this.props.getDrawingRef({
       drawLine: (...props) => this.drawLineAnimate(ctx, ...props),
       drawArc: (...props) => this.drawArcAnimate(ctx, ...props),
@@ -113,7 +123,15 @@ class CanvasDrawer extends Component {
     };
   };
 
-  drawArc(ctx, percentageToDraw, r, currentPos, isPenUp) {
+  drawTurtle(ctx, pos, angle = 0) {
+    ctx.save();
+    ctx.translate(pos.x, pos.y);
+    ctx.rotate(angle * TO_RADIANS);
+    ctx.drawImage(this.turtleImage, -(this.turtleImage.width/2), -(this.turtleImage.height/2));
+    ctx.restore();
+  }
+
+  drawArc(ctx, percentageToDraw, r, currentPos, isPenUp, redraw) {
     const x1 = currentPos.x;
     const y1 = currentPos.y;
     const toDraw = percentageToDraw / 100;
@@ -122,25 +140,34 @@ class CanvasDrawer extends Component {
     const angle = (1 + 2 * toDraw) * Math.PI;
     const x2 = c1 + Math.cos(angle) * r;
     const y2 = c2 + Math.sin(angle) * r;
+    const newPos = {
+      x: x2,
+      y: y2,
+    };
 
     ctx.beginPath();
     ctx.lineWidth = isPenUp ? 0.001 : 2;
     ctx.arc(c1, c2, r, Math.PI, angle);
     ctx.stroke();
 
-    return {
-      x: x2,
-      y: y2,
-    };
+    if ( !redraw ) {
+      this.drawTurtle(ctx, newPos);
+    }
+
+    return newPos;
   }
 
-  drawLine(ctx, width, turtleAngle, currentPos, isPenUp) {
+  drawLine(ctx, width, turtleAngle, currentPos, isPenUp, redraw) {
     const x1 = currentPos.x;
     const y1 = currentPos.y;
     const r = width;
     const theta = Math.PI * turtleAngle;
     const x2 = x1 + r * Math.cos(theta);
     const y2 = y1 + r * Math.sin(theta);
+    const newPos = {
+      x: x2,
+      y: y2,
+    };
     ctx.lineCap = 'round';
 
     ctx.beginPath();
@@ -148,10 +175,12 @@ class CanvasDrawer extends Component {
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.stroke();
-    return {
-      x: x2,
-      y: y2,
-    };
+
+    if ( !redraw ) {
+      this.drawTurtle(ctx, newPos, turtleAngle * 180);
+    }
+
+    return newPos;
   }
   penUp() {
     this.isPenUp = true;
