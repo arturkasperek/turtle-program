@@ -12,13 +12,14 @@ class Editor extends React.Component {
     let commands = [];
     try {
       const parsed = esprima.parseScript(code);
+      const funcNotAllowedNames = [];
 
       parsed.body.forEach((i) => {
         if (i.type === 'ExpressionStatement' && i.expression.type === 'CallExpression') {
           const funName = i.expression.callee.name;
 
           if (AllowedFunNames.indexOf(funName) === -1) {
-            throw new Error('Not allowed func');
+            funcNotAllowedNames.push(`Funkcja '${funName}' nie jest dozwolona!`);
           }
 
           commands.push({
@@ -28,9 +29,15 @@ class Editor extends React.Component {
         }
       });
 
+      if (funcNotAllowedNames.length > 0) {
+        throw new Error(funcNotAllowedNames.join('</br>'));
+      }
       this.props.setCommands(commands);
+      this.props.setRunActive(true);
+      this.props.setErrorMessage('');
     } catch (e) {
-      console.log('Parse err is ', e);
+      this.props.setRunActive(false);
+      this.props.setErrorMessage(e.message);
     }
   };
 

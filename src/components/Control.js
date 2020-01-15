@@ -40,7 +40,7 @@ class Control extends React.Component {
   render() {
     return (
       <div id='bottomPanel'>
-        <button onClick={this.runDrawing} id='runButton'>
+        <button onClick={this.runDrawing} id='runButton' disabled={!this.props.runActive}>
           Run
         </button>
         <div id='rangeDiv'>
