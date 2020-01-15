@@ -44,8 +44,12 @@
       grid-area: 3/3;
     }
   }
-  #notification {
-    border: dotted;
+  .notification {
     grid-area: nav;
+    border: dotted black;
+
+    &.error {
+      color: #cb1e1e;
+    }
   }
 }
