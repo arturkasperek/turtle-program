@@ -30,6 +30,11 @@ class CanvasDrawer extends Component {
     ymax: 0,
   };
 
+  direction = {
+    x: 0,
+    y: 0,
+  };
+
   canvasRef = React.createRef();
   canvasDrawerRef = React.createRef();
   virtualCanvasRef = React.createRef();
@@ -139,6 +144,7 @@ class CanvasDrawer extends Component {
       penDown: () => this.penDown(),
       reset: () => this.reset(ctx),
       finish: () => this.finish(),
+      sketching: () => this.sketching(),
     });
   }
 
@@ -230,6 +236,12 @@ class CanvasDrawer extends Component {
     this.turtleAngle += angle / 180;
   }
 
+  //Funkcja informująca, że rysunek jest w trakcie wykonywania
+  sketching() {
+    const a = document.getElementById('notification');
+    a.textContent = 'Sketching...';
+  }
+
   //Funkcja informująca, że rysowanie zostało zakończone
   finish() {
     const a = document.getElementById('notification');
@@ -269,6 +281,16 @@ class CanvasDrawer extends Component {
           break;
       }
     }
+    return position;
+  }
+
+  //Funkcja do przesuwania canvasa
+  moveCanvas() {
+    this.reset(this.canvasRef.current.getContext('2d'));
+    this.currentPos = this.canvasRedraw(this.canvasRef.current.getContext('2d'), {
+      x: this.defaultInitialPos.x + this.direction.x,
+      y: this.defaultInitialPos.y + this.direction.y,
+    });
   }
 
   render() {
@@ -279,10 +301,42 @@ class CanvasDrawer extends Component {
           <canvas style={{ display: 'none' }} ref={this.virtualCanvasRef} />
         </div>
         <div id='navi'>
-          <button id='up-button'>Up</button>
-          <button id='down-button'>Down</button>
-          <button id='left-button'>Left</button>
-          <button id='right-button'>Right</button>
+          <button
+            id='up-button'
+            onClick={() => {
+              this.direction.y += -2;
+              this.moveCanvas();
+            }}
+          >
+            Up
+          </button>
+          <button
+            id='down-button'
+            onClick={() => {
+              this.direction.y += 2;
+              this.moveCanvas();
+            }}
+          >
+            Down
+          </button>
+          <button
+            id='left-button'
+            onClick={() => {
+              this.direction.x += -2;
+              this.moveCanvas();
+            }}
+          >
+            Left
+          </button>
+          <button
+            id='right-button'
+            onClick={() => {
+              this.direction.x += 2;
+              this.moveCanvas();
+            }}
+          >
+            Right
+          </button>
           <button id='plus-button'>+</button>
           <button id='minus-button'>-</button>
           <button id='download-button' onClick={this.downloadCanvas}>
