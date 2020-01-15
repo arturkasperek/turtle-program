@@ -6,9 +6,10 @@ import fastIcon from '../img/rabbit.png';
 
 class Control extends React.Component {
   runDrawing = async () => {
-    const { drawLine, drawArc, rotate, reset, penUp, penDown, finish } = this.props.drawFunctions;
+    const { drawLine, drawArc, rotate, reset, penUp, penDown, finish, sketching } = this.props.drawFunctions;
 
     reset();
+    sketching();
     for (let i = 0; i < this.props.commands.length; i++) {
       const command = this.props.commands[i];
       switch (command.name) {
