@@ -276,10 +276,10 @@ class CanvasDrawer extends Component {
       const command = this.props.commands[i];
       switch (command.name) {
         case 'drawLine':
-          position = this.drawLine(ctx, ...command.args, rote, position, this.isPenUp, this.redraw);
+          position = this.drawLine(ctx, ...command.args, rote, position, this.isPenUp, true);
           break;
         case 'drawArc':
-          position = this.drawArc(ctx, ...command.args, position, this.isPenUp, this.redraw);
+          position = this.drawArc(ctx, ...command.args, position, this.isPenUp, true);
           break;
         case 'rotate':
           rote += command.args[0] / 180;
