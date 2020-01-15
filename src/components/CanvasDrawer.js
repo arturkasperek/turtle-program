@@ -138,6 +138,7 @@ class CanvasDrawer extends Component {
       penUp: () => this.penUp(),
       penDown: () => this.penDown(),
       reset: () => this.reset(ctx),
+      finish: () => this.finish(),
     });
   }
 
@@ -229,6 +230,12 @@ class CanvasDrawer extends Component {
     this.turtleAngle += angle / 180;
   }
 
+  //Funkcja informująca, że rysowanie zostało zakończone
+  finish() {
+    const a = document.getElementById('notification');
+    a.textContent = 'Sketch is done!!!';
+  }
+
   //Funkcja tworząca png z canvasa
   downloadCanvas() {
     this.virtualCanvasRef.current.width = this.extremePos.xmax - this.extremePos.xmin + this.defaultInitialPos.x;
@@ -266,9 +273,23 @@ class CanvasDrawer extends Component {
 
   render() {
     return (
-      <div className={'canvas-drawer'} ref={this.canvasDrawerRef}>
-        <canvas id='cvs' width={'200px'} height={'640px'} ref={this.canvasRef} />
-        <canvas style={{ display: 'none' }} ref={this.virtualCanvasRef} />
+      <div id='drawer-container'>
+        <div className={'canvas-drawer'} ref={this.canvasDrawerRef}>
+          <canvas width={'200px'} height={'640px'} ref={this.canvasRef} />
+          <canvas style={{ display: 'none' }} ref={this.virtualCanvasRef} />
+        </div>
+        <div id='navi'>
+          <button id='up-button'>Up</button>
+          <button id='down-button'>Down</button>
+          <button id='left-button'>Left</button>
+          <button id='right-button'>Right</button>
+          <button id='plus-button'>+</button>
+          <button id='minus-button'>-</button>
+          <button id='download-button' onClick={this.downloadCanvas}>
+            Convert
+          </button>
+        </div>
+        <div id='notification'>Notification</div>
       </div>
     );
   }
