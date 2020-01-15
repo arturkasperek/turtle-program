@@ -55,12 +55,7 @@ class CanvasDrawer extends Component {
     this.currentPos = {
       ...this.defaultInitialPos,
     };
-    this.extremePos = {
-      xmin: 0,
-      xmax: 0,
-      ymin: 0,
-      ymax: 0,
-    };
+
     this.turtleAngle = 0;
 
     this.oldToDraw = [];
@@ -238,6 +233,16 @@ class CanvasDrawer extends Component {
 
   //Funkcja informująca, że rysunek jest w trakcie wykonywania
   sketching() {
+    this.extremePos = {
+      xmin: 0,
+      xmax: 0,
+      ymin: 0,
+      ymax: 0,
+    };
+    this.direction = {
+      x: 0,
+      y: 0,
+    };
     const a = document.getElementById('notification');
     a.textContent = 'Sketching...';
   }
