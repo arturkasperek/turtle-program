@@ -10,6 +10,9 @@ class CanvasDrawer extends Component {
     super(props);
     this.canvasRedraw = this.canvasRedraw.bind(this);
     this.downloadCanvas = this.downloadCanvas.bind(this);
+    this.mouseDown = this.mouseDown.bind(this);
+    this.mouseMove = this.mouseMove.bind(this);
+    this.mouseUp = this.mouseUp.bind(this);
   }
 
   isPenUp = false;
@@ -129,6 +132,8 @@ class CanvasDrawer extends Component {
     const adjustCanvasSize = this.adjustCanvasSizeFactory(ctx);
 
     window.addEventListener('resize', adjustCanvasSize);
+    this.canvasDrawerRef.current.addEventListener('mousedown', this.mouseDown, false);
+    this.canvasDrawerRef.current.addEventListener('mouseup', this.mouseUp, false);
     adjustCanvasSize();
     this.loadTurtleIcon();
     this.props.getDrawingRef({
@@ -141,6 +146,17 @@ class CanvasDrawer extends Component {
       finish: () => this.finish(),
       sketching: () => this.sketching(),
     });
+  }
+
+  mouseDown() {
+    this.canvasDrawerRef.current.addEventListener('mousemove', this.mouseMove, true);
+  }
+  mouseMove(e) {
+    this.direction = { x: this.direction.x + e.movementX, y: this.direction.y + e.movementY };
+    this.moveCanvas();
+  }
+  mouseUp() {
+    this.canvasDrawerRef.current.removeEventListener('mousemove', this.mouseMove, true);
   }
 
   adjustCanvasSizeFactory = (ctx) => {
