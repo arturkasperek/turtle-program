@@ -158,6 +158,7 @@ class CanvasDrawer extends Component {
       reset: () => this.reset(ctx),
       finish: () => this.finish(),
       sketching: () => this.sketching(),
+      adjustCanvasSize: () => adjustCanvasSize(),
     });
   }
 
@@ -366,7 +367,7 @@ class CanvasDrawer extends Component {
     return (
       <div id='drawer-container' style={{ display: this.props.display.drawer }}>
         <div className={'canvas-drawer'} ref={this.canvasDrawerRef}>
-          <canvas width={'200px'} height={'640px'} ref={this.canvasRef} />
+          <canvas ref={this.canvasRef} />
           <canvas style={{ display: 'none' }} ref={this.virtualCanvasRef} />
         </div>
         <div id='navi'>
