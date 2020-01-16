@@ -140,7 +140,7 @@ class CanvasDrawer extends Component {
     const ctx = canvas.getContext('2d');
     const adjustCanvasSize = this.adjustCanvasSizeFactory(ctx);
 
-    if (window.matchMedia('(max-width: 900px)').matches) {
+    if (window.matchMedia('(max-width: 600px)').matches) {
       this.props.setDisplay({ drawer: 'none', rightPanel: 'grid' });
     }
 
@@ -188,6 +188,7 @@ class CanvasDrawer extends Component {
 
       ctx.clearRect(0, 0, this.canvasSize.x, this.canvasSize.y);
       this.oldToDraw.forEach((func) => func());
+      this.moveCanvas();
     };
   };
 
@@ -292,11 +293,11 @@ class CanvasDrawer extends Component {
 
   //Funkcja tworząca png z canvasa
   downloadCanvas() {
-    this.virtualCanvasRef.current.width = this.extremePos.xmax - this.extremePos.xmin + this.defaultInitialPos.x;
-    this.virtualCanvasRef.current.height = this.extremePos.ymax - this.extremePos.ymin + this.defaultInitialPos.y;
+    this.virtualCanvasRef.current.width = (this.extremePos.xmax - this.extremePos.xmin + this.defaultInitialPos.x) * this.scale;
+    this.virtualCanvasRef.current.height = (this.extremePos.ymax - this.extremePos.ymin + this.defaultInitialPos.y) * this.scale;
     this.canvasRedraw(this.virtualCanvasRef.current.getContext('2d'), {
-      x: this.extremePos.xmin > 0 ? 0 : 1.5 * this.defaultInitialPos.x - this.extremePos.xmin,
-      y: this.extremePos.ymin > 0 ? 0 : 1.5 * this.defaultInitialPos.y - this.extremePos.ymin,
+      x: this.extremePos.xmin > 0 ? 0 : (1.5 * this.defaultInitialPos.x - this.extremePos.xmin) * this.scale,
+      y: this.extremePos.ymin > 0 ? 0 : (1.5 * this.defaultInitialPos.y - this.extremePos.ymin) * this.scale,
     });
     const a = document.createElement('a');
     document.body.appendChild(a);
