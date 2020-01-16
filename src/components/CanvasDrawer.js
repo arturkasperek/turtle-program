@@ -18,6 +18,8 @@ class CanvasDrawer extends Component {
     this.mouseMove = this.mouseMove.bind(this);
     this.mouseUp = this.mouseUp.bind(this);
     this.backToEditor = this.backToEditor.bind(this);
+    this.scaleUp = this.scaleUp.bind(this);
+    this.scaleDown = this.scaleDown.bind(this);
   }
 
   isPenUp = false;
@@ -42,6 +44,8 @@ class CanvasDrawer extends Component {
     x: 0,
     y: 0,
   };
+
+  scale = 1;
 
   canvasRef = React.createRef();
   canvasDrawerRef = React.createRef();
@@ -195,6 +199,7 @@ class CanvasDrawer extends Component {
   }
 
   drawArc(ctx, percentageToDraw, r, currentPos, isPenUp, redraw) {
+    r = r * this.scale;
     const x1 = currentPos.x;
     const y1 = currentPos.y;
     const toDraw = percentageToDraw / 100;
@@ -225,8 +230,8 @@ class CanvasDrawer extends Component {
     const y1 = currentPos.y;
     const r = width;
     const theta = Math.PI * turtleAngle;
-    const x2 = x1 + r * Math.cos(theta);
-    const y2 = y1 + r * Math.sin(theta);
+    const x2 = x1 + r * Math.cos(theta) * this.scale;
+    const y2 = y1 + r * Math.sin(theta) * this.scale;
     const newPos = {
       x: x2,
       y: y2,
@@ -268,6 +273,7 @@ class CanvasDrawer extends Component {
       x: 0,
       y: 0,
     };
+    this.scale = 1;
 
     this.props.setRunActive(false);
     this.setState({
@@ -338,6 +344,24 @@ class CanvasDrawer extends Component {
     this.props.setDisplay({ drawer: 'none', rightPanel: 'grid' });
   }
 
+  scaleUp() {
+    if (this.scale >= 1) {
+      this.scale += 1;
+    } else {
+      this.scale += 0.1;
+    }
+    this.moveCanvas();
+  }
+
+  scaleDown() {
+    if (this.scale > 1) {
+      this.scale -= 1;
+    } else if (this.scale > 0.2) {
+      this.scale -= 0.1;
+    }
+    this.moveCanvas();
+  }
+
   render() {
     return (
       <div id='drawer-container' style={{ display: this.props.display.drawer }}>
@@ -382,8 +406,12 @@ class CanvasDrawer extends Component {
           >
             Right
           </button>
-          <button id='plus-button'>+</button>
-          <button id='minus-button'>-</button>
+          <button id='plus-button' onClick={this.scaleUp}>
+            +
+          </button>
+          <button id='minus-button' onClick={this.scaleDown}>
+            -
+          </button>
           <button id='download-button' onClick={this.downloadCanvas}>
             Convert
           </button>
