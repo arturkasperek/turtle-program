@@ -6,6 +6,10 @@ import turtleIcon from '../img/turtle.png';
 const TO_RADIANS = Math.PI / 180;
 
 class CanvasDrawer extends Component {
+  state = {
+    notification: '',
+  };
+
   constructor(props) {
     super(props);
     this.canvasRedraw = this.canvasRedraw.bind(this);
@@ -264,14 +268,19 @@ class CanvasDrawer extends Component {
       x: 0,
       y: 0,
     };
-    const a = document.getElementById('notification');
-    a.textContent = 'Sketching...';
+
+    this.props.setRunActive(false);
+    this.setState({
+      notification: 'Sketching...',
+    });
   }
 
   //Funkcja informująca, że rysowanie zostało zakończone
   finish() {
-    const a = document.getElementById('notification');
-    a.textContent = 'Sketch is done!!!';
+    this.props.setRunActive(true);
+    this.setState({
+      notification: 'Sketch is done!!!',
+    });
   }
 
   //Funkcja tworząca png z canvasa
@@ -340,7 +349,7 @@ class CanvasDrawer extends Component {
           <button
             id='up-button'
             onClick={() => {
-              this.direction.y += -2;
+              this.direction.y += -10;
               this.moveCanvas();
             }}
           >
@@ -349,7 +358,7 @@ class CanvasDrawer extends Component {
           <button
             id='down-button'
             onClick={() => {
-              this.direction.y += 2;
+              this.direction.y += 10;
               this.moveCanvas();
             }}
           >
@@ -358,7 +367,7 @@ class CanvasDrawer extends Component {
           <button
             id='left-button'
             onClick={() => {
-              this.direction.x += -2;
+              this.direction.x += -10;
               this.moveCanvas();
             }}
           >
@@ -367,7 +376,7 @@ class CanvasDrawer extends Component {
           <button
             id='right-button'
             onClick={() => {
-              this.direction.x += 2;
+              this.direction.x += 10;
               this.moveCanvas();
             }}
           >
@@ -382,7 +391,8 @@ class CanvasDrawer extends Component {
             Back
           </button>
         </div>
-        <div id='notification'>Notification</div>
+        {!!this.props.errorMessage && <div className='notification error' dangerouslySetInnerHTML={{ __html: this.props.errorMessage }} />}
+        {!this.props.errorMessage && <div className='notification'>{this.state.notification}</div>}
       </div>
     );
   }

@@ -10,6 +10,8 @@ function App() {
   const [commands, setCommands] = useState([]);
   const [speed, setSpeed] = useState(50);
   const [display, setDisplay] = useState({ drawer: 'grid', rightPanel: 'grid' });
+  const [runActive, setRunActive] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   return (
     <main>
@@ -19,18 +21,21 @@ function App() {
         speed={speed}
         getDrawingRef={(drawingFunctions) => setDrawFunctions(drawingFunctions)}
         commands={commands}
+        setRunActive={setRunActive}
+        errorMessage={errorMessage}
         display={display}
         setDisplay={setDisplay}
       />
 
-      <div className='panels' id='rightPanel' style={{ display: display.rightPanel }}>
-        <Editor setCommands={setCommands} />
+      <div className='panels' id='rightPanel' style={{ display: display.rightPanel } setRunActive={setRunActive}}>
+        <Editor setErrorMessage={setErrorMessage} setCommands={setCommands} />
         {!isEmpty(drawFunctions) && (
           <Control
             speed={speed}
             setSpeed={setSpeed}
             commands={commands}
             drawFunctions={drawFunctions}
+            runActive={runActive}
             display={display}
             setDisplay={setDisplay}
           />

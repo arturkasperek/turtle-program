@@ -48,9 +48,13 @@
       display: none;
     }
   }
-  #notification {
-    border: dotted;
+  .notification {
     grid-area: nav;
+    border: dotted black;
+
+    &.error {
+      color: #cb1e1e;
+    }
   }
 }
 
