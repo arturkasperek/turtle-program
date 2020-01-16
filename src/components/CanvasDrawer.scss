@@ -43,6 +43,10 @@
     #minus-button {
       grid-area: 3/3;
     }
+    #back-button {
+      grid-area: 1/1;
+      display: none;
+    }
   }
   .notification {
     grid-area: nav;
@@ -50,6 +54,15 @@
 
     &.error {
       color: #cb1e1e;
+    }
+  }
+}
+
+@media only screen and (max-device-width: 900px) {
+  #drawer-container {
+    flex-basis: 100%;
+    #back-button {
+      display: block !important;
     }
   }
 }
