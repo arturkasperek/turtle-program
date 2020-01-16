@@ -140,7 +140,7 @@ class CanvasDrawer extends Component {
     const ctx = canvas.getContext('2d');
     const adjustCanvasSize = this.adjustCanvasSizeFactory(ctx);
 
-    if (window.matchMedia('(max-width: 900px)').matches) {
+    if (window.matchMedia('(max-width: 600px)').matches) {
       this.props.setDisplay({ drawer: 'none', rightPanel: 'grid' });
     }
 
@@ -187,6 +187,7 @@ class CanvasDrawer extends Component {
 
       ctx.clearRect(0, 0, this.canvasSize.x, this.canvasSize.y);
       this.oldToDraw.forEach((func) => func());
+      this.moveCanvas();
     };
   };
 
