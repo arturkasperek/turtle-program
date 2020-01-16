@@ -8,6 +8,10 @@ class Control extends React.Component {
   runDrawing = async () => {
     const { drawLine, drawArc, rotate, reset, penUp, penDown, finish, sketching } = this.props.drawFunctions;
 
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      this.props.setDisplay({ drawer: 'grid', rightPanel: 'none' });
+    }
+
     reset();
     sketching();
     for (let i = 0; i < this.props.commands.length; i++) {

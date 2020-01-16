@@ -9,14 +9,32 @@ function App() {
   const [drawFunctions, setDrawFunctions] = useState({});
   const [commands, setCommands] = useState([]);
   const [speed, setSpeed] = useState(50);
+  const [display, setDisplay] = useState({ drawer: 'grid', rightPanel: 'grid' });
 
   return (
     <main>
-      <CanvasDrawer speed={speed} getDrawingRef={(drawingFunctions) => setDrawFunctions(drawingFunctions)} commands={commands} />
+      <meta name='viewport' content='width=device-width, initial-scale=1' />
 
-      <div className='panels' id='rightPanel'>
+      <CanvasDrawer
+        speed={speed}
+        getDrawingRef={(drawingFunctions) => setDrawFunctions(drawingFunctions)}
+        commands={commands}
+        display={display}
+        setDisplay={setDisplay}
+      />
+
+      <div className='panels' id='rightPanel' style={{ display: display.rightPanel }}>
         <Editor setCommands={setCommands} />
-        {!isEmpty(drawFunctions) && <Control speed={speed} setSpeed={setSpeed} commands={commands} drawFunctions={drawFunctions} />}
+        {!isEmpty(drawFunctions) && (
+          <Control
+            speed={speed}
+            setSpeed={setSpeed}
+            commands={commands}
+            drawFunctions={drawFunctions}
+            display={display}
+            setDisplay={setDisplay}
+          />
+        )}
       </div>
     </main>
   );

@@ -13,6 +13,7 @@ class CanvasDrawer extends Component {
     this.mouseDown = this.mouseDown.bind(this);
     this.mouseMove = this.mouseMove.bind(this);
     this.mouseUp = this.mouseUp.bind(this);
+    this.backToEditor = this.backToEditor.bind(this);
   }
 
   isPenUp = false;
@@ -130,6 +131,10 @@ class CanvasDrawer extends Component {
     const canvas = this.canvasRef.current;
     const ctx = canvas.getContext('2d');
     const adjustCanvasSize = this.adjustCanvasSizeFactory(ctx);
+
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      this.props.setDisplay({ drawer: 'none', rightPanel: 'grid' });
+    }
 
     window.addEventListener('resize', adjustCanvasSize);
     this.canvasDrawerRef.current.addEventListener('mousedown', this.mouseDown, false);
@@ -320,9 +325,13 @@ class CanvasDrawer extends Component {
     });
   }
 
+  backToEditor() {
+    this.props.setDisplay({ drawer: 'none', rightPanel: 'grid' });
+  }
+
   render() {
     return (
-      <div id='drawer-container'>
+      <div id='drawer-container' style={{ display: this.props.display.drawer }}>
         <div className={'canvas-drawer'} ref={this.canvasDrawerRef}>
           <canvas width={'200px'} height={'640px'} ref={this.canvasRef} />
           <canvas style={{ display: 'none' }} ref={this.virtualCanvasRef} />
@@ -368,6 +377,9 @@ class CanvasDrawer extends Component {
           <button id='minus-button'>-</button>
           <button id='download-button' onClick={this.downloadCanvas}>
             Convert
+          </button>
+          <button id='back-button' onClick={this.backToEditor}>
+            Back
           </button>
         </div>
         <div id='notification'>Notification</div>
