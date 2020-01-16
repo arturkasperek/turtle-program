@@ -5,12 +5,19 @@ import slowIcon from '../img/snail.png';
 import fastIcon from '../img/rabbit.png';
 import { visitFunctionBody } from 'typescript';
 
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 class Control extends React.Component {
   runDrawing = async () => {
-    const { drawLine, drawArc, rotate, reset, penUp, penDown, finish, sketching } = this.props.drawFunctions;
+    const { drawLine, drawArc, rotate, reset, penUp, penDown, finish, sketching, adjustCanvasSize } = this.props.drawFunctions;
 
     if (window.matchMedia('(max-width: 600px)').matches) {
       this.props.setDisplay({ drawer: 'grid', rightPanel: 'none' });
+      await wait(20);
+      adjustCanvasSize();
+      await wait(20);
     }
 
     reset();
