@@ -72,7 +72,7 @@ class Editor extends React.Component {
           if (AllowedFunNames.indexOf(funName) === -1) {
             funcNotAllowedNames.push(`Funkcja '${funName}' nie jest dozwolona!`);
           }
-          
+
           // Wykrycie pętli
           if (funName === 'repeat') {
             loops = i.expression.arguments[0].value;
@@ -105,9 +105,23 @@ class Editor extends React.Component {
               name: funName,
               args: get(i.expression, 'arguments', []).map((i) => i.value),
             });
-
         }
       });
+
+      if (shouldRepeat) {
+        shouldRepeat = false;
+        for (var j = 0; j < loops; j++) {
+          funNames.forEach((k) => {
+            if (k.expression.callee.name !== 'repeat' && k.expression.callee.name !== 'end')
+              commands.push({
+                name: k.expression.callee.name,
+                args: get(k.expression, 'arguments', []).map((k) => k.value),
+              });
+          });
+        }
+        funNames = [];
+        loops = 0;
+      }
 
       if (funcNotAllowedNames.length > 0) {
         throw new Error(funcNotAllowedNames.join('</br>'));
