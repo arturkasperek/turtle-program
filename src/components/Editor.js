@@ -75,7 +75,7 @@ class Editor extends React.Component {
 
           // Wykrycie pętli
           if (funName === 'repeat') {
-            loops = i.expression.arguments[0].value;
+            loops = i.expression.arguments[0].value - 1;
             shouldRepeat = true;
           }
 
