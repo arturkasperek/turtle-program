@@ -20,6 +20,9 @@ class CanvasDrawer extends Component {
     this.backToEditor = this.backToEditor.bind(this);
     this.scaleUp = this.scaleUp.bind(this);
     this.scaleDown = this.scaleDown.bind(this);
+    this.touchStart = this.touchStart.bind(this);
+    this.touchMove = this.touchMove.bind(this);
+    this.touchEnd = this.touchEnd.bind(this);
   }
 
   isPenUp = false;
@@ -41,6 +44,10 @@ class CanvasDrawer extends Component {
   };
 
   direction = {
+    x: 0,
+    y: 0,
+  };
+  lastDirection = {
     x: 0,
     y: 0,
   };
@@ -147,6 +154,7 @@ class CanvasDrawer extends Component {
     window.addEventListener('resize', adjustCanvasSize);
     this.canvasDrawerRef.current.addEventListener('mousedown', this.mouseDown, false);
     this.canvasDrawerRef.current.addEventListener('mouseup', this.mouseUp, false);
+    this.canvasDrawerRef.current.addEventListener('touchstart', this.touchStart, true);
     adjustCanvasSize();
     this.loadTurtleIcon();
     this.props.getDrawingRef({
@@ -160,6 +168,40 @@ class CanvasDrawer extends Component {
       sketching: () => this.sketching(),
       adjustCanvasSize: () => adjustCanvasSize(),
     });
+  }
+
+  touchStart(e) {
+    let touchPos = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+    this.canvasDrawerRef.current.addEventListener(
+      'touchmove',
+      (e) => {
+        this.touchMove(e, touchPos);
+      },
+      true
+    );
+    this.canvasDrawerRef.current.addEventListener('touchend', this.touchEnd, false);
+  }
+
+  touchMove(e, touchedPos) {
+    let change = {
+      x: -touchedPos.x + e.touches[0].clientX,
+      y: -touchedPos.y + e.touches[0].clientY,
+    };
+    this.direction.x = this.lastDirection.x + change.x;
+    this.direction.y = this.lastDirection.y + change.y;
+    this.moveCanvas();
+  }
+
+  touchEnd() {
+    const x = this.direction.x;
+    const y = this.direction.y;
+    this.lastDirection = {
+      x: x,
+      y: y,
+    };
   }
 
   mouseDown() {
@@ -272,6 +314,10 @@ class CanvasDrawer extends Component {
       ymax: 0,
     };
     this.direction = {
+      x: 0,
+      y: 0,
+    };
+    this.lastDirection = {
       x: 0,
       y: 0,
     };
