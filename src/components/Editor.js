@@ -8,6 +8,51 @@ import './Editor.scss';
 const AllowedFunNames = ['drawLine', 'drawArc', 'rotate', 'penUp', 'penDown'];
 
 class Editor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.touchStart = this.touchStart.bind(this);
+    this.touchMove = this.touchMove.bind(this);
+    this.touchEnd = this.touchEnd.bind(this);
+  }
+  editorRef = React.createRef();
+
+  componentDidMount() {
+    this.editorRef.current.addEventListener('touchstart', this.touchStart, true);
+  }
+
+  touchPos;
+  touchedPos;
+
+  touchStart(e) {
+    this.touchPos = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+    this.editorRef.current.addEventListener('touchmove', this.touchMove, true);
+    this.editorRef.current.addEventListener('touchend', this.touchEnd, false);
+  }
+
+  touchMove(e) {
+    this.touchedPos = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  }
+
+  touchEnd() {
+    if (this.touchedPos.x - this.touchPos.x > 100) {
+      this.props.setDisplay({ drawer: 'grid', rightPanel: 'none' });
+    }
+    this.touchPos = {
+      x: 0,
+      y: 0,
+    };
+    this.touchedPos = {
+      x: 0,
+      y: 0,
+    };
+  }
+
   validateCode = (code) => {
     let commands = [];
     try {
@@ -49,7 +94,7 @@ class Editor extends React.Component {
 
   render() {
     return (
-      <div id='textEditor'>
+      <div id='textEditor' ref={this.editorRef}>
         <AceEditor
           mode='java'
           theme='github'

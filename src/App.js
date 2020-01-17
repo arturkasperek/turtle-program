@@ -28,7 +28,13 @@ function App() {
       />
 
       <div className='panels' id='rightPanel' style={{ display: display.rightPanel }}>
-        <Editor setErrorMessage={setErrorMessage} setCommands={setCommands} setRunActive={setRunActive} />
+        <Editor
+          setErrorMessage={setErrorMessage}
+          setCommands={setCommands}
+          setRunActive={setRunActive}
+          display={display}
+          setDisplay={setDisplay}
+        />
         {!isEmpty(drawFunctions) && (
           <Control
             speed={speed}
