@@ -5,9 +5,54 @@ import * as esprima from 'esprima';
 import '../App.scss';
 import './Editor.scss';
 
-const AllowedFunNames = ['drawLine', 'drawArc', 'rotate', 'repeat', 'end'];
+const AllowedFunNames = ['drawLine', 'drawArc', 'rotate', 'penUp', 'penDown', 'repeat', 'end'];
 
 class Editor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.touchStart = this.touchStart.bind(this);
+    this.touchMove = this.touchMove.bind(this);
+    this.touchEnd = this.touchEnd.bind(this);
+  }
+  editorRef = React.createRef();
+
+  componentDidMount() {
+    this.editorRef.current.addEventListener('touchstart', this.touchStart, true);
+  }
+
+  touchPos;
+  touchedPos;
+
+  touchStart(e) {
+    this.touchPos = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+    this.editorRef.current.addEventListener('touchmove', this.touchMove, true);
+    this.editorRef.current.addEventListener('touchend', this.touchEnd, false);
+  }
+
+  touchMove(e) {
+    this.touchedPos = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  }
+
+  touchEnd() {
+    if (this.touchedPos.x - this.touchPos.x > 100) {
+      this.props.setDisplay({ drawer: 'grid', rightPanel: 'none' });
+    }
+    this.touchPos = {
+      x: 0,
+      y: 0,
+    };
+    this.touchedPos = {
+      x: 0,
+      y: 0,
+    };
+  }
+
   validateCode = (code) => {
     let commands = [];
     try {
@@ -18,15 +63,16 @@ class Editor extends React.Component {
       var funNames = [];
       // Zmienna pomocnicza potrzebna do zakodowania ilości powtórzeń pętli
       var loops = 0;
+      const funcNotAllowedNames = [];
 
       parsed.body.forEach((i) => {
         if (i.type === 'ExpressionStatement' && i.expression.type === 'CallExpression') {
           const funName = i.expression.callee.name;
 
           if (AllowedFunNames.indexOf(funName) === -1) {
-            throw new Error('Not allowed func');
+            funcNotAllowedNames.push(`Funkcja '${funName}' nie jest dozwolona!`);
           }
-
+          
           // Wykrycie pętli
           if (funName === 'repeat') {
             loops = i.expression.arguments[0].value;
@@ -59,12 +105,19 @@ class Editor extends React.Component {
               name: funName,
               args: get(i.expression, 'arguments', []).map((i) => i.value),
             });
+
         }
       });
 
+      if (funcNotAllowedNames.length > 0) {
+        throw new Error(funcNotAllowedNames.join('</br>'));
+      }
       this.props.setCommands(commands);
+      this.props.setRunActive(true);
+      this.props.setErrorMessage('');
     } catch (e) {
-      console.log('Parse err is ', e);
+      this.props.setRunActive(false);
+      this.props.setErrorMessage(e.message);
     }
   };
 
@@ -76,7 +129,7 @@ class Editor extends React.Component {
 
   render() {
     return (
-      <div id='textEditor'>
+      <div id='textEditor' ref={this.editorRef}>
         <AceEditor
           mode='java'
           theme='github'

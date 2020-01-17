@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 body {
   background-color: lightgray;
   padding: 1vh;
@@ -6,6 +9,7 @@ body {
 
 main {
   display: flex;
+  height: 100%;
 }
 
 .panels {
@@ -13,8 +17,6 @@ main {
   border: 1px solid;
   height: 96vh;
   margin: 1vh;
-  min-height: 300px;
-  min-width: 300px;
   display: flex;
 }
 
@@ -22,9 +24,36 @@ main {
   flex-basis: 0;
   flex-grow: 1;
   display: grid;
+  width: 40%;
   grid-template-rows: 5fr 1fr;
 }
 
-main {
-  height: 100%;
+@media only screen and (max-device-width: 600px) {
+  * {
+    box-sizing: border-box !important;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    main {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      #drawer-container {
+        height: 100% !important;
+        width: 100% !important;
+      }
+      #rightPanel {
+        margin: 0;
+        padding: 0;
+        height: 100% !important;
+        width: 100% !important;
+        flex-basis: unset;
+        flex-grow: 0;
+      }
+    }
+  }
 }
