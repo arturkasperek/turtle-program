@@ -73,7 +73,6 @@ jobs:
         uses: cypress-io/github-action@v1
         with:
           build: |
-            npm i -g yarn
-            yarn
+            yarn install
           start: yarn web-start
           wait-on: http://localhost:1234
