@@ -23,7 +23,7 @@ jobs:
         npm i -g yarn
         yarn
         yarn build
-        yarn dist
+        yarn dist-mac
     - name: Zip Release
       run: zip -r build.zip ./dist
     - name: Make Release
