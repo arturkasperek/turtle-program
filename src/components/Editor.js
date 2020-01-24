@@ -5,7 +5,7 @@ import * as esprima from 'esprima';
 import '../App.scss';
 import './Editor.scss';
 
-const AllowedFunNames = ['drawLine', 'drawArc', 'rotate', 'penUp', 'penDown'];
+const AllowedFunNames = ['drawLine', 'drawArc', 'rotate', 'penUp', 'penDown', 'repeat', 'end'];
 
 class Editor extends React.Component {
   constructor(props) {
@@ -57,6 +57,12 @@ class Editor extends React.Component {
     let commands = [];
     try {
       const parsed = esprima.parseScript(code);
+      // Zmienna pomocnicza informująca czy dane komendy powtarzać
+      var shouldRepeat = false;
+      // W tej tablicy przechowywane są obiekty "parsed.body"
+      var funNames = [];
+      // Zmienna pomocnicza potrzebna do zakodowania ilości powtórzeń pętli
+      var loops = 0;
       const funcNotAllowedNames = [];
 
       parsed.body.forEach((i) => {
@@ -67,12 +73,55 @@ class Editor extends React.Component {
             funcNotAllowedNames.push(`Funkcja '${funName}' nie jest dozwolona!`);
           }
 
-          commands.push({
-            name: funName,
-            args: get(i.expression, 'arguments', []).map((i) => i.value),
-          });
+          // Wykrycie pętli
+          if (funName === 'repeat') {
+            loops = i.expression.arguments[0].value - 1;
+            shouldRepeat = true;
+          }
+
+          // Zapisywanie a następnie wykonanie komend po wykryciu end
+          if (shouldRepeat) {
+            if (funName === 'end') {
+              shouldRepeat = false;
+              for (var j = 0; j < loops; j++) {
+                funNames.forEach((k) => {
+                  if (k.expression.callee.name !== 'repeat' && k.expression.callee.name !== 'end')
+                    commands.push({
+                      name: k.expression.callee.name,
+                      args: get(k.expression, 'arguments', []).map((k) => k.value),
+                    });
+                });
+              }
+              funNames = [];
+              loops = 0;
+            } else {
+              funNames.push(i);
+            }
+          }
+
+          // Odrzucenie komend repeat i end pownieważ nie odpowiadają one za rysowanie
+          if (funName !== 'repeat' && funName !== 'end')
+            commands.push({
+              name: funName,
+              args: get(i.expression, 'arguments', []).map((i) => i.value),
+            });
         }
       });
+
+      if (shouldRepeat) {
+        shouldRepeat = false;
+        for (var j = 0; j < loops; j++) {
+          funNames.forEach((k) => {
+            if (k.expression.callee.name !== 'repeat' && k.expression.callee.name !== 'end')
+              commands.push({
+                name: k.expression.callee.name,
+                args: get(k.expression, 'arguments', []).map((k) => k.value),
+              });
+          });
+        }
+        funNames = [];
+        loops = 0;
+      }
 
       if (funcNotAllowedNames.length > 0) {
         throw new Error(funcNotAllowedNames.join('</br>'));
