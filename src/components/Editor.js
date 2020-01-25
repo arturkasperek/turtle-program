@@ -5,7 +5,7 @@ import * as esprima from 'esprima';
 import '../App.scss';
 import './Editor.scss';
 
-const AllowedFunNames = ['drawLine', 'drawArc', 'rotate', 'penUp', 'penDown', 'repeat', 'end'];
+const AllowedFunNames = ['drawLine', 'drawArc', 'rotate', 'penUp', 'penDown', 'repeat'];
 
 class Editor extends React.Component {
   constructor(props) {
@@ -13,6 +13,7 @@ class Editor extends React.Component {
     this.touchStart = this.touchStart.bind(this);
     this.touchMove = this.touchMove.bind(this);
     this.touchEnd = this.touchEnd.bind(this);
+    this.repeater = this.repeater.bind(this);
   }
   editorRef = React.createRef();
 
@@ -57,12 +58,6 @@ class Editor extends React.Component {
     let commands = [];
     try {
       const parsed = esprima.parseScript(code);
-      // Zmienna pomocnicza informująca czy dane komendy powtarzać
-      var shouldRepeat = false;
-      // W tej tablicy przechowywane są obiekty "parsed.body"
-      var funNames = [];
-      // Zmienna pomocnicza potrzebna do zakodowania ilości powtórzeń pętli
-      var loops = 0;
       const funcNotAllowedNames = [];
 
       parsed.body.forEach((i) => {
@@ -75,53 +70,16 @@ class Editor extends React.Component {
 
           // Wykrycie pętli
           if (funName === 'repeat') {
-            loops = i.expression.arguments[0].value - 1;
-            shouldRepeat = true;
-          }
-
-          // Zapisywanie a następnie wykonanie komend po wykryciu end
-          if (shouldRepeat) {
-            if (funName === 'end') {
-              shouldRepeat = false;
-              for (var j = 0; j < loops; j++) {
-                funNames.forEach((k) => {
-                  if (k.expression.callee.name !== 'repeat' && k.expression.callee.name !== 'end')
-                    commands.push({
-                      name: k.expression.callee.name,
-                      args: get(k.expression, 'arguments', []).map((k) => k.value),
-                    });
-                });
-              }
-              funNames = [];
-              loops = 0;
-            } else {
-              funNames.push(i);
-            }
-          }
-
-          // Odrzucenie komend repeat i end pownieważ nie odpowiadają one za rysowanie
-          if (funName !== 'repeat' && funName !== 'end')
+            // ilość powtórzeń // tablica z expression Statement // pusta tablica
+            commands = commands.concat(this.repeater(i.expression.arguments[0].value, i.expression.arguments[1].body.body, []));
+          } else {
             commands.push({
               name: funName,
               args: get(i.expression, 'arguments', []).map((i) => i.value),
             });
+          }
         }
       });
-
-      if (shouldRepeat) {
-        shouldRepeat = false;
-        for (var j = 0; j < loops; j++) {
-          funNames.forEach((k) => {
-            if (k.expression.callee.name !== 'repeat' && k.expression.callee.name !== 'end')
-              commands.push({
-                name: k.expression.callee.name,
-                args: get(k.expression, 'arguments', []).map((k) => k.value),
-              });
-          });
-        }
-        funNames = [];
-        loops = 0;
-      }
 
       if (funcNotAllowedNames.length > 0) {
         throw new Error(funcNotAllowedNames.join('</br>'));
@@ -134,6 +92,23 @@ class Editor extends React.Component {
       this.props.setErrorMessage(e.message);
     }
   };
+
+  // Funkcja do obsługi pętli repeat
+  repeater(count, args, commandsInside) {
+    for (let j = 0; j < count; j++) {
+      args.forEach((k) => {
+        if (k.expression.callee.name !== 'repeat') {
+          commandsInside.push({
+            name: k.expression.callee.name,
+            args: get(k.expression, 'arguments', []).map((k) => k.value),
+          });
+        } else {
+          commandsInside = this.repeater(k.expression.arguments[0].value, k.expression.arguments[1].body.body, commandsInside);
+        }
+      });
+    }
+    return commandsInside;
+  }
 
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     return false;
