@@ -5,7 +5,7 @@ import * as esprima from 'esprima';
 import '../App.scss';
 import './Editor.scss';
 
-const AllowedFunNames = ['drawLine', 'drawArc', 'rotate', 'penUp', 'penDown'];
+const AllowedFunNames = ['drawLine', 'drawArc', 'rotate', 'penUp', 'penDown', 'repeat'];
 
 class Editor extends React.Component {
   constructor(props) {
@@ -13,6 +13,7 @@ class Editor extends React.Component {
     this.touchStart = this.touchStart.bind(this);
     this.touchMove = this.touchMove.bind(this);
     this.touchEnd = this.touchEnd.bind(this);
+    this.repeater = this.repeater.bind(this);
   }
   editorRef = React.createRef();
 
@@ -67,10 +68,16 @@ class Editor extends React.Component {
             funcNotAllowedNames.push(`Funkcja '${funName}' nie jest dozwolona!`);
           }
 
-          commands.push({
-            name: funName,
-            args: get(i.expression, 'arguments', []).map((i) => i.value),
-          });
+          // Wykrycie pętli
+          if (funName === 'repeat') {
+            // ilość powtórzeń // tablica z expression Statement // pusta tablica
+            commands = commands.concat(this.repeater(i.expression.arguments[0].value, i.expression.arguments[1].body.body, []));
+          } else {
+            commands.push({
+              name: funName,
+              args: get(i.expression, 'arguments', []).map((i) => i.value),
+            });
+          }
         }
       });
 
@@ -85,6 +92,23 @@ class Editor extends React.Component {
       this.props.setErrorMessage(e.message);
     }
   };
+
+  // Funkcja do obsługi pętli repeat
+  repeater(count, args, commandsInside) {
+    for (let j = 0; j < count; j++) {
+      args.forEach((k) => {
+        if (k.expression.callee.name !== 'repeat') {
+          commandsInside.push({
+            name: k.expression.callee.name,
+            args: get(k.expression, 'arguments', []).map((k) => k.value),
+          });
+        } else {
+          commandsInside = this.repeater(k.expression.arguments[0].value, k.expression.arguments[1].body.body, commandsInside);
+        }
+      });
+    }
+    return commandsInside;
+  }
 
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     return false;
