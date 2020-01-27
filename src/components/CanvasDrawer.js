@@ -29,6 +29,8 @@ class CanvasDrawer extends Component {
 
   isPenUp = false;
 
+  isSketching = false;
+
   static defaultProps = {
     getDrawingRef: () => {},
   };
@@ -173,18 +175,20 @@ class CanvasDrawer extends Component {
   }
 
   touchStart(e) {
-    let touchPos = {
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
-    };
-    this.canvasDrawerRef.current.addEventListener(
-      'touchmove',
-      (e) => {
-        this.touchMove(e, touchPos);
-      },
-      true
-    );
-    this.canvasDrawerRef.current.addEventListener('touchend', this.touchEnd, false);
+    if (!this.isSketching) {
+      let touchPos = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+      };
+      this.canvasDrawerRef.current.addEventListener(
+        'touchmove',
+        (e) => {
+          this.touchMove(e, touchPos);
+        },
+        true
+      );
+      this.canvasDrawerRef.current.addEventListener('touchend', this.touchEnd, false);
+    }
   }
 
   touchMove(e, touchedPos) {
@@ -207,7 +211,9 @@ class CanvasDrawer extends Component {
   }
 
   mouseDown() {
-    this.canvasDrawerRef.current.addEventListener('mousemove', this.mouseMove, true);
+    if (!this.isSketching) {
+      this.canvasDrawerRef.current.addEventListener('mousemove', this.mouseMove, true);
+    }
   }
   mouseMove(e) {
     this.direction = { x: this.direction.x + e.movementX, y: this.direction.y + e.movementY };
@@ -329,6 +335,7 @@ class CanvasDrawer extends Component {
     this.setState({
       notification: 'Sketching...',
     });
+    this.isSketching = true;
   }
 
   //Funkcja informująca, że rysowanie zostało zakończone
@@ -337,22 +344,25 @@ class CanvasDrawer extends Component {
     this.setState({
       notification: 'Sketch is done!!!',
     });
+    this.isSketching = false;
   }
 
   //Funkcja tworząca png z canvasa
   downloadCanvas() {
-    this.virtualCanvasRef.current.width = (this.extremePos.xmax - this.extremePos.xmin + this.defaultInitialPos.x) * this.scale;
-    this.virtualCanvasRef.current.height = (this.extremePos.ymax - this.extremePos.ymin + this.defaultInitialPos.y) * this.scale;
-    this.canvasRedraw(this.virtualCanvasRef.current.getContext('2d'), {
-      x: this.extremePos.xmin > 0 ? 0 : (1.5 * this.defaultInitialPos.x - this.extremePos.xmin) * this.scale,
-      y: this.extremePos.ymin > 0 ? 0 : (1.5 * this.defaultInitialPos.y - this.extremePos.ymin) * this.scale,
-    });
-    const a = document.createElement('a');
-    document.body.appendChild(a);
-    a.href = this.virtualCanvasRef.current.toDataURL();
-    a.download = 'MyDraw.' + this.state.convertType;
-    a.click();
-    document.body.removeChild(a);
+    if (!this.isSketching) {
+      this.virtualCanvasRef.current.width = (this.extremePos.xmax - this.extremePos.xmin + this.defaultInitialPos.x) * this.scale;
+      this.virtualCanvasRef.current.height = (this.extremePos.ymax - this.extremePos.ymin + this.defaultInitialPos.y) * this.scale;
+      this.canvasRedraw(this.virtualCanvasRef.current.getContext('2d'), {
+        x: this.extremePos.xmin > 0 ? 0 : (1.5 * this.defaultInitialPos.x - this.extremePos.xmin) * this.scale,
+        y: this.extremePos.ymin > 0 ? 0 : (1.5 * this.defaultInitialPos.y - this.extremePos.ymin) * this.scale,
+      });
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.href = this.virtualCanvasRef.current.toDataURL();
+      a.download = 'MyDraw.' + this.state.convertType;
+      a.click();
+      document.body.removeChild(a);
+    }
   }
 
   //Funkcja do przerysowywania canvasa
@@ -395,21 +405,25 @@ class CanvasDrawer extends Component {
   }
 
   scaleUp() {
-    if (this.scale >= 1) {
-      this.scale += 1;
-    } else {
-      this.scale += 0.1;
+    if (!this.isSketching) {
+      if (this.scale >= 1) {
+        this.scale += 1;
+      } else {
+        this.scale += 0.1;
+      }
+      this.moveCanvas();
     }
-    this.moveCanvas();
   }
 
   scaleDown() {
-    if (this.scale > 1) {
-      this.scale -= 1;
-    } else if (this.scale > 0.2) {
-      this.scale -= 0.1;
+    if (!this.isSketching) {
+      if (this.scale > 1) {
+        this.scale -= 1;
+      } else if (this.scale > 0.2) {
+        this.scale -= 0.1;
+      }
+      this.moveCanvas();
     }
-    this.moveCanvas();
   }
 
   changeConvertType() {
@@ -438,8 +452,10 @@ class CanvasDrawer extends Component {
           <button
             id='up-button'
             onClick={() => {
-              this.direction.y += -10;
-              this.moveCanvas();
+              if (!this.isSketching) {
+                this.direction.y += -10;
+                this.moveCanvas();
+              }
             }}
           >
             Up
@@ -447,8 +463,10 @@ class CanvasDrawer extends Component {
           <button
             id='down-button'
             onClick={() => {
-              this.direction.y += 10;
-              this.moveCanvas();
+              if (!this.isSketching) {
+                this.direction.y += 10;
+                this.moveCanvas();
+              }
             }}
           >
             Down
@@ -456,8 +474,10 @@ class CanvasDrawer extends Component {
           <button
             id='left-button'
             onClick={() => {
-              this.direction.x += -10;
-              this.moveCanvas();
+              if (!this.isSketching) {
+                this.direction.x += -10;
+                this.moveCanvas();
+              }
             }}
           >
             Left
@@ -465,8 +485,10 @@ class CanvasDrawer extends Component {
           <button
             id='right-button'
             onClick={() => {
-              this.direction.x += 10;
-              this.moveCanvas();
+              if (!this.isSketching) {
+                this.direction.x += 10;
+                this.moveCanvas();
+              }
             }}
           >
             Right
