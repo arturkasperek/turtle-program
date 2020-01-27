@@ -8,6 +8,7 @@ const TO_RADIANS = Math.PI / 180;
 class CanvasDrawer extends Component {
   state = {
     notification: '',
+    convertType: 'png',
   };
 
   constructor(props) {
@@ -23,6 +24,7 @@ class CanvasDrawer extends Component {
     this.touchStart = this.touchStart.bind(this);
     this.touchMove = this.touchMove.bind(this);
     this.touchEnd = this.touchEnd.bind(this);
+    this.changeConvertType = this.changeConvertType.bind(this);
   }
 
   isPenUp = false;
@@ -348,7 +350,7 @@ class CanvasDrawer extends Component {
     const a = document.createElement('a');
     document.body.appendChild(a);
     a.href = this.virtualCanvasRef.current.toDataURL();
-    a.download = 'MyDraw.png';
+    a.download = 'MyDraw.' + this.state.convertType;
     a.click();
     document.body.removeChild(a);
   }
@@ -410,6 +412,21 @@ class CanvasDrawer extends Component {
     this.moveCanvas();
   }
 
+  changeConvertType() {
+    switch (this.state.convertType) {
+      case 'png':
+        {
+          this.setState({ convertType: 'jpg' });
+        }
+        break;
+      case 'jpg':
+        {
+          this.setState({ convertType: 'png' });
+        }
+        break;
+    }
+  }
+
   render() {
     return (
       <div id='drawer-container' style={{ display: this.props.display.drawer }}>
@@ -465,6 +482,9 @@ class CanvasDrawer extends Component {
           </button>
           <button id='back-button' onClick={this.backToEditor}>
             Back
+          </button>
+          <button id='convert-type-button' onClick={this.changeConvertType}>
+            Type: {this.state.convertType}
           </button>
         </div>
         {!!this.props.errorMessage && <div className='notification error' dangerouslySetInnerHTML={{ __html: this.props.errorMessage }} />}
