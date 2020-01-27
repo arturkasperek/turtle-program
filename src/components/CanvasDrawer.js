@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import './CanvasDrawer.scss';
 import turtleIcon from '../img/turtle.png';
+import CanvasSVG from '../canvas-getsvg';
 
 const TO_RADIANS = Math.PI / 180;
 
 class CanvasDrawer extends Component {
   state = {
     notification: '',
-    convertType: 'png',
+    convertType: 'svg',
   };
 
   constructor(props) {
@@ -349,7 +350,34 @@ class CanvasDrawer extends Component {
 
   //Funkcja tworząca png z canvasa
   downloadCanvas() {
-    if (!this.isSketching) {
+if (!this.isSketching) {
+    if (this.state.convertType == 'svg') {
+      this.virtualCanvasRef.current.width = (this.extremePos.xmax - this.extremePos.xmin + this.defaultInitialPos.x) * this.scale;
+      this.virtualCanvasRef.current.height = (this.extremePos.ymax - this.extremePos.ymin + this.defaultInitialPos.y) * this.scale;
+      const canvas = this.virtualCanvasRef.current;
+      const canvasSVGcontext = new CanvasSVG.Deferred();
+      canvasSVGcontext.wrapCanvas(canvas);
+      var ctx = canvas.getContext('2d');
+      this.canvasRedraw(ctx, {
+        x: this.extremePos.xmin > 0 ? 0 : (1.5 * this.defaultInitialPos.x - this.extremePos.xmin) * this.scale,
+        y: this.extremePos.ymin > 0 ? 0 : (1.5 * this.defaultInitialPos.y - this.extremePos.ymin) * this.scale,
+      });
+      const a = document.createElement('a');
+      a.appendChild(ctx.getSVG());
+      document.body.appendChild(a);
+      var serializer = new XMLSerializer();
+      var source = serializer.serializeToString(a);
+
+      //Deklaracja xmla
+      source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+
+      //Conversja svg do schematu url
+      a.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(source);
+      a.download = 'MyDraw.' + this.state.convertType;
+      a.click();
+      document.body.removeChild(a);
+    } else {
+    
       this.virtualCanvasRef.current.width = (this.extremePos.xmax - this.extremePos.xmin + this.defaultInitialPos.x) * this.scale;
       this.virtualCanvasRef.current.height = (this.extremePos.ymax - this.extremePos.ymin + this.defaultInitialPos.y) * this.scale;
       this.canvasRedraw(this.virtualCanvasRef.current.getContext('2d'), {
@@ -363,6 +391,7 @@ class CanvasDrawer extends Component {
       a.click();
       document.body.removeChild(a);
     }
+  }
   }
 
   //Funkcja do przerysowywania canvasa
