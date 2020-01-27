@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import './CanvasDrawer.scss';
 import turtleIcon from '../img/turtle.png';
+import { CanvasSVG } from '../canvas-getsvg';
 
 const TO_RADIANS = Math.PI / 180;
 
@@ -146,6 +147,8 @@ class CanvasDrawer extends Component {
 
   async componentDidMount() {
     const canvas = this.canvasRef.current;
+    const canvasSVGcontext = CanvasSVG.Deferred();
+    canvasSVGcontext.wrapCanvas(canvas);
     const ctx = canvas.getContext('2d');
     const adjustCanvasSize = this.adjustCanvasSizeFactory(ctx);
 
