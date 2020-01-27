@@ -36,7 +36,7 @@
 //  - take a bunch of complex canvas scripts and try them out
 //  - wire in Processing.js
 
-CanvasSVG = {};
+const CanvasSVG = {};
 CanvasSVG.Base = function() {};
 CanvasSVG.Base.prototype = {
   ns: 'http://www.w3.org/2000/svg',
