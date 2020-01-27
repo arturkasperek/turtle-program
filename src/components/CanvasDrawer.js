@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import './CanvasDrawer.scss';
 import turtleIcon from '../img/turtle.png';
+import CanvasSVG from '../canvas-getsvg';
 
 const TO_RADIANS = Math.PI / 180;
 
@@ -352,15 +353,39 @@ class CanvasDrawer extends Component {
     if (!this.isSketching) {
       this.virtualCanvasRef.current.width = (this.extremePos.xmax - this.extremePos.xmin + this.defaultInitialPos.x) * this.scale;
       this.virtualCanvasRef.current.height = (this.extremePos.ymax - this.extremePos.ymin + this.defaultInitialPos.y) * this.scale;
+
+      if (this.state.convertType == 'svg') {
+        const canvasSVGcontext = new CanvasSVG.Deferred();
+        canvasSVGcontext.wrapCanvas(this.virtualCanvasRef.current);
+      }
+
       this.canvasRedraw(this.virtualCanvasRef.current.getContext('2d'), {
         x: this.extremePos.xmin > 0 ? 0 : (1.5 * this.defaultInitialPos.x - this.extremePos.xmin) * this.scale,
         y: this.extremePos.ymin > 0 ? 0 : (1.5 * this.defaultInitialPos.y - this.extremePos.ymin) * this.scale,
       });
       const a = document.createElement('a');
+
+      if (this.state.convertType == 'svg') {
+        a.appendChild(this.virtualCanvasRef.current.getContext('2d').getSVG());
+      }
+
       document.body.appendChild(a);
-      a.href = this.virtualCanvasRef.current.toDataURL();
+
+      if (this.state.convertType == 'svg') {
+        var serializer = new XMLSerializer();
+        var source = '';
+        source = serializer.serializeToString(a);
+        //Deklaracja xmla
+        source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+        //Conversja svg do schematu url
+        a.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(source);
+      } else {
+        a.href = this.virtualCanvasRef.current.toDataURL();
+      }
+
       a.download = 'MyDraw.' + this.state.convertType;
       a.click();
+
       document.body.removeChild(a);
     }
   }
@@ -435,9 +460,12 @@ class CanvasDrawer extends Component {
         break;
       case 'jpg':
         {
-          this.setState({ convertType: 'png' });
+          this.setState({ convertType: 'svg' });
         }
         break;
+      case 'svg': {
+        this.setState({ convertType: 'png' });
+      }
     }
   }
 
