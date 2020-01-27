@@ -47,6 +47,9 @@
       grid-area: 1/1;
       display: none;
     }
+    #convert-type-button {
+      grid-area: 3/1;
+    }
   }
   .notification {
     grid-area: nav;
