@@ -46,3 +46,25 @@
   width: 32px;
   height: 32px;
 }
+
+#hint-div {
+  height: 25px;
+  width: 25px;
+  background-color: Blue;
+  position: relative;
+  right: 0;
+  color: white;
+  text-align: center;
+  border-radius: 15px;
+}
+#hint-div:hover + #tutorial-div {
+  display: block;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background-color: lightblue;
+  border-radius: 3%;
+}
+#tutorial-div {
+  display: none;
+}
