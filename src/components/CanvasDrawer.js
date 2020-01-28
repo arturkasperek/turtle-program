@@ -465,6 +465,7 @@ class CanvasDrawer extends Component {
         break;
       case 'svg': {
         this.setState({ convertType: 'png' });
+        break;
       }
     }
   }

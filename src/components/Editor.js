@@ -122,6 +122,32 @@ class Editor extends React.Component {
         <AceEditor
           mode='java'
           theme='github'
+          value='//Simple tutorial
+//Lets play...
+//You can draw a line using drawLine(length here)
+drawLine(100)
+//You can pen up using penUp()
+penUp()
+//Now we arent see results of comands below
+//Its not visable
+drawLine(100)
+//To pen down you have to use penDown()
+penDown()
+//Its visible 
+drawLine(100)
+//We can change direction for drawing using rotate(here angle)
+rotate(90)
+//What has happened? Lets draw a line and see...
+drawLine(100)
+//We can draw arcs using drawArc(here % of circle, here r of circle)
+drawArc(50,20)
+//We can also make loops using repeat(here loop count, ()=>{here comands...})
+repeat(4, ()=>{
+    drawLine(30)
+    rotate(45)
+})
+//Gratulations!!! You know now, how to drawing. Soo, enjoy and have fun :D
+//To watch result fo this tutorial, you have to add new line here and click run button'
           onChange={this.validateCodeDebounce}
           name='ACE_EDITOR'
           editorProps={{ $blockScrolling: true }}
